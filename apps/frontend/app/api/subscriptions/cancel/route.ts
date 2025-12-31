@@ -25,7 +25,7 @@ export async function POST() {
     }
 
     await prisma.subscription.updateMany({
-      where: { id: { in: actives.map(s => s.id) } },
+      where: { id: { in: actives.map((s: { id: number }) => s.id) } },
       data: { status: 'CANCELED' as any }
     });
 
