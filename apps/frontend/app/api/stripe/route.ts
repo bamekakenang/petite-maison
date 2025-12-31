@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       console.warn('Stripe webhook secret not set or signature missing.');
       return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 400 });
     }
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2025-09-30.clover' });
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' as Stripe.LatestApiVersion });
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err: any) {
     console.error(`Webhook signature verification failed: ${err.message}`);

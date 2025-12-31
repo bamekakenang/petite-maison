@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!key) return NextResponse.json({ error: 'stripe_not_configured' }, { status: 400 });
 
-  const stripe = new Stripe(key, { apiVersion: '2025-09-30.clover' });
+  const stripe = new Stripe(key, { apiVersion: '2024-06-20' as Stripe.LatestApiVersion });
 
   let event: Stripe.Event;
   try {

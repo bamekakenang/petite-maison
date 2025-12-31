@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     if (!key) {
       return NextResponse.json({ error: 'stripe_not_configured' }, { status: 400 });
     }
-    const stripe = new Stripe(key, { apiVersion: '2025-09-30.clover' });
+    const stripe = new Stripe(key, { apiVersion: '2024-06-20' as Stripe.LatestApiVersion });
 
     // Validate cart
     if (!items || !Array.isArray(items) || items.length === 0) {

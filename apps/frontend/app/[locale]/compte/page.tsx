@@ -4,7 +4,13 @@ import Link from 'next/link';
 
 export default async function AccountPage({ params:{locale} }:{ params:{locale:string} }) {
   const user = await currentUser();
-  const orders = user ? await (await import('../../../lib/prisma')).prisma.order.findMany({ where: { userId: user.id }, orderBy: { createdAt: 'desc' } }) : [];
+  const orders: { id: number; createdAt: Date; status: string; totalCents: number }[] =
+    user
+      ? await (await import('../../../lib/prisma')).prisma.order.findMany({
+          where: { userId: user.id },
+          orderBy: { createdAt: 'desc' },
+        })
+      : [];
   return (
     <main className="mx-auto max-w-3xl px-4 py-8 space-y-6">
       {!user ? (

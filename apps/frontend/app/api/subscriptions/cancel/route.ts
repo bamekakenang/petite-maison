@@ -12,7 +12,7 @@ export async function POST() {
     if (actives.length === 0) return NextResponse.json({ ok: true, canceled: 0 });
 
     const key = process.env.STRIPE_SECRET_KEY;
-    const stripe = key ? new Stripe(key, { apiVersion: '2025-09-30.clover' }) : null;
+    const stripe = key ? new Stripe(key, { apiVersion: '2024-06-20' as Stripe.LatestApiVersion }) : null;
 
     for (const sub of actives) {
       if (stripe && sub.stripeSubscriptionId) {
