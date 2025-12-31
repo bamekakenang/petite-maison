@@ -16,6 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Debug workspace
+        run: |
+          pwd
+          ls -la
+          ls -la package.json package-lock.json || true
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -39,6 +45,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Debug workspace
+        run: |
+          pwd
+          ls -la
+          ls -la package.json package-lock.json || true
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -60,6 +72,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Debug workspace
+        run: |
+          pwd
+          ls -la
+          ls -la package.json package-lock.json || true
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -98,6 +116,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Debug workspace
+        run: |
+          pwd
+          ls -la
+          ls -la package.json package-lock.json || true
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -127,6 +151,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Debug workspace
+        run: |
+          pwd
+          ls -la
+          ls -la package.json package-lock.json || true
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -149,6 +179,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Debug workspace
+        run: |
+          pwd
+          ls -la
+          ls -la package.json package-lock.json || true
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -179,6 +215,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Debug workspace
+        run: |
+          pwd
+          ls -la
+          ls -la package.json package-lock.json || true
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
