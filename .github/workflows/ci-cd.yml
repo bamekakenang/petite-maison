@@ -26,16 +26,13 @@ jobs:
           node-version: '18'
       
       - name: Install dependencies
-        working-directory: ./backend
-        run: npm ci
+        run: npm ci --prefix backend
       
       - name: Run ESLint
-        working-directory: ./backend
-        run: npm run lint
+        run: npm run lint --prefix backend
       
       - name: TypeScript Check
-        working-directory: ./backend
-        run: npx tsc --noEmit
+        run: npx tsc --noEmit --project backend/tsconfig.json
 
   lint-frontend:
     name: Frontend Linting
@@ -56,12 +53,10 @@ jobs:
           node-version: '18'
       
       - name: Install dependencies
-        working-directory: ./apps/frontend
-        run: npm ci
+        run: npm ci --prefix apps/frontend
       
       - name: TypeScript Check
-        working-directory: ./apps/frontend
-        run: npx tsc --noEmit
+        run: npx tsc --noEmit --project apps/frontend/tsconfig.json
 
   test-backend:
     name: Backend Tests
@@ -87,12 +82,10 @@ jobs:
         run: npm ci
       
       - name: Generate Prisma Client
-        working-directory: ./backend
-        run: npm run prisma:generate
+        run: npm run prisma:generate --prefix backend
       
       - name: Run tests with coverage
-        working-directory: ./backend
-        run: npm test -- --coverage
+        run: npm test --prefix backend -- --coverage
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -132,8 +125,7 @@ jobs:
         run: npm ci
       
       - name: Run npm audit
-        working-directory: ./backend
-        run: npm audit --audit-level=moderate
+        run: npm audit --audit-level=moderate --prefix backend
         continue-on-error: true
       
       - name: Run Snyk Security Scan
@@ -167,8 +159,7 @@ jobs:
         run: npm ci
       
       - name: Run npm audit
-        working-directory: ./apps/frontend
-        run: npm audit --audit-level=moderate
+        run: npm audit --audit-level=moderate --prefix apps/frontend
         continue-on-error: true
 
   build-backend:
@@ -199,8 +190,7 @@ jobs:
         run: npm run prisma:generate
       
       - name: Build
-        working-directory: ./backend
-        run: npm run build
+        run: npm run build --prefix backend
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
@@ -232,12 +222,10 @@ jobs:
         run: npm ci
       
       - name: Generate Prisma Client
-        working-directory: ./apps/frontend
-        run: npx prisma generate
+        run: npx prisma generate --schema apps/frontend/prisma/schema.prisma
       
       - name: Build
-        working-directory: ./apps/frontend
-        run: npm run build
+        run: npm run build --prefix apps/frontend
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
