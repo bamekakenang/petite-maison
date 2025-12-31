@@ -10,9 +10,21 @@ const categories = [
   { id: 'comics', nameKey: 'category.comics' }
 ];
 
-export default async function ProduitsPage() {
+export default async function ProduitsPage({ searchParams }: { searchParams?: { q?: string } }) {
   const t = await getTranslations();
-  const items = await prisma.product.findMany({ orderBy: { id: 'asc' } });
+  const q = (searchParams?.q || '').trim();
+  const items = await prisma.product.findMany({
+    where: q
+      ? {
+          OR: [
+            { nameKey: { contains: q, mode: 'insensitive' } },
+            { sku: { contains: q, mode: 'insensitive' } },
+            { category: { contains: q, mode: 'insensitive' } },
+          ],
+        }
+      : undefined,
+    orderBy: { id: 'asc' },
+  });
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
@@ -39,13 +51,15 @@ export default async function ProduitsPage() {
 
       {/* Barre de recherche et tri */}
       <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <div className="flex-1 max-w-md">
+        <form className="flex-1 max-w-md" role="search">
           <input
             type="search"
+            name="q"
+            defaultValue={q}
             placeholder={t('pages.products.searchPlaceholder')}
             className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900"
           />
-        </div>
+        </form>
         <select className="px-4 py-2 border rounded-xl bg-white">
           <option value="name">{t('pages.products.sortByName')}</option>
           <option value="price-asc">{t('pages.products.sortByPriceAsc')}</option>

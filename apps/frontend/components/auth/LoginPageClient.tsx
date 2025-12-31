@@ -8,8 +8,10 @@ export function LoginPageClient({ locale }: { locale: string }) {
   const t = useTranslations();
   const router = useRouter();
   const [mode, setMode] = useState<'login'|'register'>('login');
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [gender, setGender] = useState('');
+  const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('');
@@ -27,8 +29,10 @@ export function LoginPageClient({ locale }: { locale: string }) {
       const url = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
       const body:any = { email, password, remember };
       if (mode === 'register') {
-        body.name = name;
+        body.firstName = firstName;
+        body.lastName = lastName;
         body.gender = gender;
+        body.phone = phone;
         body.address = address;
         body.city = city;
         body.country = country;
@@ -58,8 +62,14 @@ export function LoginPageClient({ locale }: { locale: string }) {
 
       {mode==='register' && (
         <div>
-          <label className="block text-sm mb-1">{t('pages.auth.register.name')}</label>
-          <input value={name} onChange={e=>setName(e.target.value)} className="w-full border border-neutral-300 bg-white text-neutral-900 placeholder-neutral-500 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-900" placeholder={t('pages.auth.register.namePlaceholder')} required />
+          <label className="block text-sm mb-1">{t('pages.auth.register.firstName') ?? 'Prénom'}</label>
+          <input value={firstName} onChange={e=>setFirstName(e.target.value)} className="w-full border border-neutral-300 bg-white text-neutral-900 placeholder-neutral-500 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-900" placeholder="Prénom" required />
+        </div>
+      )}
+      {mode==='register' && (
+        <div>
+          <label className="block text-sm mb-1">{t('pages.auth.register.lastName') ?? 'Nom'}</label>
+          <input value={lastName} onChange={e=>setLastName(e.target.value)} className="w-full border border-neutral-300 bg-white text-neutral-900 placeholder-neutral-500 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-900" placeholder="Nom" />
         </div>
       )}
       {mode==='register' && (
@@ -77,6 +87,12 @@ export function LoginPageClient({ locale }: { locale: string }) {
             <label className="block text-sm mb-1">Pays</label>
             <input value={country} onChange={e=>setCountry(e.target.value)} className="w-full border border-neutral-300 bg-white text-neutral-900 placeholder-neutral-500 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-900" placeholder="France" required />
           </div>
+        </div>
+      )}
+      {mode==='register' && (
+        <div>
+          <label className="block text-sm mb-1">Téléphone</label>
+          <input value={phone} onChange={e=>setPhone(e.target.value)} className="w-full border border-neutral-300 bg-white text-neutral-900 placeholder-neutral-500 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-900" placeholder="+33 6 12 34 56 78" required />
         </div>
       )}
       {mode==='register' && (

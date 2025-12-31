@@ -99,6 +99,7 @@ export interface RegisterDto {
   firstName?: string;
   lastName?: string;
   gender?: string;
+  phone?: string;
   address?: string;
   city?: string;
   country?: string;
