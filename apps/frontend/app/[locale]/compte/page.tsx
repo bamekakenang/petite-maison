@@ -17,7 +17,14 @@ export default async function AccountPage({ params:{locale} }:{ params:{locale:s
           <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
             <div className="flex items-center gap-4 mb-4">
               <span aria-hidden className="avatar-initials inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-red-900 via-red-600 to-black text-white font-semibold uppercase tracking-wide ring-2 ring-red-500/40 shadow-[0_0_14px_rgba(220,38,38,0.5)] text-lg">
-                {(user.name || user.email).split('@')[0].split(/[_.\-\s]+/).slice(0,2).map(p=>p[0]).join('').slice(0,2).toUpperCase()}
+                {(user.name || user.email)
+                  .split('@')[0]
+                  .split(/[_.\-\s]+/)
+                  .slice(0, 2)
+                  .map((p: string) => p[0])
+                  .join('')
+                  .slice(0, 2)
+                  .toUpperCase()}
               </span>
               <div>
                 <h1 className="text-2xl font-semibold">Mon compte</h1>
@@ -32,7 +39,7 @@ export default async function AccountPage({ params:{locale} }:{ params:{locale:s
               <p className="text-neutral-400 text-sm">Aucune commande pour l’instant.</p>
             ) : (
               <ul className="space-y-3">
-                {orders.map(o => (
+                {orders.map((o: { id: number; createdAt: Date; status: string; totalCents: number }) => (
                   <li key={o.id} className="flex items-center justify-between text-sm">
                     <span>Commande #{o.id} • {new Date(o.createdAt).toLocaleDateString()} • {o.status}</span>
                     <span className="font-semibold">{(o.totalCents/100).toFixed(2)}€</span>

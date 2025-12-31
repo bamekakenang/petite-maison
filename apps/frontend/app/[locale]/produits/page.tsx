@@ -56,7 +56,7 @@ export default async function ProduitsPage() {
 
       {/* Grille de produits */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {items.map(product => (
+        {items.map((product: { id: number; sku: string; nameKey: string; priceCents: number; image: string }) => (
           <ProductCard
             key={product.id}
             sku={product.sku}
