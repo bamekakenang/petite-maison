@@ -10,13 +10,11 @@ jobs:
   lint-backend:
     name: Backend Linting
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
     steps:
       - uses: actions/checkout@v3
       
       - name: Debug workspace
+        working-directory: ./backend
         run: |
           pwd
           ls -la
@@ -28,24 +26,25 @@ jobs:
           node-version: '18'
       
       - name: Install dependencies
+        working-directory: ./backend
         run: npm ci
       
       - name: Run ESLint
+        working-directory: ./backend
         run: npm run lint
       
       - name: TypeScript Check
+        working-directory: ./backend
         run: npx tsc --noEmit
 
   lint-frontend:
     name: Frontend Linting
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./apps/frontend
     steps:
       - uses: actions/checkout@v3
       
       - name: Debug workspace
+        working-directory: ./apps/frontend
         run: |
           pwd
           ls -la
@@ -57,22 +56,22 @@ jobs:
           node-version: '18'
       
       - name: Install dependencies
+        working-directory: ./apps/frontend
         run: npm ci
       
       - name: TypeScript Check
+        working-directory: ./apps/frontend
         run: npx tsc --noEmit
 
   test-backend:
     name: Backend Tests
     runs-on: ubuntu-latest
     needs: lint-backend
-    defaults:
-      run:
-        working-directory: ./backend
     steps:
       - uses: actions/checkout@v3
       
       - name: Debug workspace
+        working-directory: ./backend
         run: |
           pwd
           ls -la
@@ -84,12 +83,15 @@ jobs:
           node-version: '18'
       
       - name: Install dependencies
+        working-directory: ./backend
         run: npm ci
       
       - name: Generate Prisma Client
+        working-directory: ./backend
         run: npm run prisma:generate
       
       - name: Run tests with coverage
+        working-directory: ./backend
         run: npm test -- --coverage
       
       - name: Upload coverage to Codecov
@@ -110,13 +112,11 @@ jobs:
   security-backend:
     name: Backend Security Scan
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
     steps:
       - uses: actions/checkout@v3
       
       - name: Debug workspace
+        working-directory: ./backend
         run: |
           pwd
           ls -la
@@ -128,9 +128,11 @@ jobs:
           node-version: '18'
       
       - name: Install dependencies
+        working-directory: ./backend
         run: npm ci
       
       - name: Run npm audit
+        working-directory: ./backend
         run: npm audit --audit-level=moderate
         continue-on-error: true
       
@@ -145,13 +147,11 @@ jobs:
   security-frontend:
     name: Frontend Security Scan
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./apps/frontend
     steps:
       - uses: actions/checkout@v3
       
       - name: Debug workspace
+        working-directory: ./apps/frontend
         run: |
           pwd
           ls -la
@@ -163,9 +163,11 @@ jobs:
           node-version: '18'
       
       - name: Install dependencies
+        working-directory: ./apps/frontend
         run: npm ci
       
       - name: Run npm audit
+        working-directory: ./apps/frontend
         run: npm audit --audit-level=moderate
         continue-on-error: true
 
@@ -173,13 +175,11 @@ jobs:
     name: Build Backend
     runs-on: ubuntu-latest
     needs: [lint-backend, test-backend]
-    defaults:
-      run:
-        working-directory: ./backend
     steps:
       - uses: actions/checkout@v3
       
       - name: Debug workspace
+        working-directory: ./backend
         run: |
           pwd
           ls -la
@@ -191,12 +191,15 @@ jobs:
           node-version: '18'
       
       - name: Install dependencies
+        working-directory: ./backend
         run: npm ci
       
       - name: Generate Prisma Client
+        working-directory: ./backend
         run: npm run prisma:generate
       
       - name: Build
+        working-directory: ./backend
         run: npm run build
       
       - name: Upload build artifacts
@@ -209,13 +212,11 @@ jobs:
     name: Build Frontend
     runs-on: ubuntu-latest
     needs: [lint-frontend]
-    defaults:
-      run:
-        working-directory: ./apps/frontend
     steps:
       - uses: actions/checkout@v3
       
       - name: Debug workspace
+        working-directory: ./apps/frontend
         run: |
           pwd
           ls -la
@@ -227,12 +228,15 @@ jobs:
           node-version: '18'
       
       - name: Install dependencies
+        working-directory: ./apps/frontend
         run: npm ci
       
       - name: Generate Prisma Client
+        working-directory: ./apps/frontend
         run: npx prisma generate
       
       - name: Build
+        working-directory: ./apps/frontend
         run: npm run build
       
       - name: Upload build artifacts
