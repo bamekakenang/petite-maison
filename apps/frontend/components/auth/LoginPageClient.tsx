@@ -62,13 +62,13 @@ export function LoginPageClient({ locale }: { locale: string }) {
 
       {mode==='register' && (
         <div>
-          <label className="block text-sm mb-1">{t('pages.auth.register.firstName') ?? 'Prénom'}</label>
+          <label className="block text-sm mb-1">Prénom</label>
           <input value={firstName} onChange={e=>setFirstName(e.target.value)} className="w-full border border-neutral-300 bg-white text-neutral-900 placeholder-neutral-500 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-900" placeholder="Prénom" required />
         </div>
       )}
       {mode==='register' && (
         <div>
-          <label className="block text-sm mb-1">{t('pages.auth.register.lastName') ?? 'Nom'}</label>
+          <label className="block text-sm mb-1">Nom</label>
           <input value={lastName} onChange={e=>setLastName(e.target.value)} className="w-full border border-neutral-300 bg-white text-neutral-900 placeholder-neutral-500 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neutral-900" placeholder="Nom" />
         </div>
       )}
