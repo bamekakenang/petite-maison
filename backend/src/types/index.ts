@@ -8,6 +8,7 @@ export interface AuthenticatedRequest extends Request {
     role: string;
   };
 }
+/* eslint-disable @typescript-eslint/no-namespace */
 
 declare global {
   namespace Express {
@@ -20,6 +21,7 @@ declare global {
     }
   }
 }
+/* eslint-enable @typescript-eslint/no-namespace */
 
 // API Response types
 export interface ApiResponse<T = any> {
