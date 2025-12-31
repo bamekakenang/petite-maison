@@ -98,6 +98,10 @@ export interface RegisterDto {
   password: string;
   firstName?: string;
   lastName?: string;
+  gender?: string;
+  address?: string;
+  city?: string;
+  country?: string;
 }
 
 export interface LoginDto {

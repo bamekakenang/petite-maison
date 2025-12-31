@@ -18,6 +18,10 @@ model User {
   passwordHash  String
   firstName     String?
   lastName      String?
+  gender        String?
+  address       String?
+  city          String?
+  country       String?
   role          String    @default("CUSTOMER")
   isActive      Boolean   @default(true)
   createdAt     DateTime  @default(now())

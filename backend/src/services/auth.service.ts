@@ -28,6 +28,10 @@ export class AuthService {
         passwordHash,
         firstName: data.firstName,
         lastName: data.lastName,
+        gender: data.gender,
+        address: data.address,
+        city: data.city,
+        country: data.country,
       },
     });
 
@@ -55,6 +59,10 @@ export class AuthService {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        gender: user.gender,
+        address: user.address,
+        city: user.city,
+        country: user.country,
         role: user.role,
       },
       tokens,
