@@ -32,12 +32,15 @@ export async function POST(req: Request) {
       user: data.data.user,
     });
 
+    const isProd = process.env.NODE_ENV === 'production';
+    const sameSite = isProd ? 'strict' : 'lax';
+
     if (data.data?.tokens) {
       // Access token (15min)
       res.cookies.set('auth_token', data.data.tokens.accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        secure: isProd,
+        sameSite,
         path: '/',
         maxAge: 15 * 60, // 15 minutes
       });
@@ -45,8 +48,8 @@ export async function POST(req: Request) {
       // Refresh token (7 days)
       res.cookies.set('refresh_token', data.data.tokens.refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        secure: isProd,
+        sameSite,
         path: '/',
         maxAge: remember ? 7 * 24 * 60 * 60 : 2 * 60 * 60,
       });
@@ -54,8 +57,8 @@ export async function POST(req: Request) {
       // User info (client-readable)
       res.cookies.set('user', JSON.stringify(data.data.user), {
         httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        secure: isProd,
+        sameSite,
         path: '/',
         maxAge: remember ? 7 * 24 * 60 * 60 : 2 * 60 * 60,
       });

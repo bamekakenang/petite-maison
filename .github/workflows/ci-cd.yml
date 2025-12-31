@@ -5,6 +5,8 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
+env:
+  ZAP_TARGET_URL: ${{ secrets.ZAP_TARGET_URL || '' }}
 
 jobs:
   lint-backend:
@@ -278,6 +280,18 @@ jobs:
       - name: Deploy to production
         run: echo "Deploying backend and frontend to production environment..."
         # Add your deployment script here (e.g., Vercel, Railway, AWS)
+  zap-baseline:
+    name: ZAP Baseline
+    runs-on: ubuntu-latest
+    needs: [build-backend, build-frontend]
+    if: ${{ env.ZAP_TARGET_URL != '' }}
+    steps:
+      - uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: ${{ env.ZAP_TARGET_URL }}
+          cmd_options: "-I"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   performance-test:
     name: Load Testing

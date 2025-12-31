@@ -4,16 +4,22 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/ap
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password, remember } = await req.json();
+    const {
+      firstName,
+      lastName,
+      gender,
+      phone,
+      address,
+      city,
+      country,
+      email,
+      password,
+      remember
+    } = await req.json();
     
-    if (!email || !password) {
+    if (!email || !password || !firstName) {
       return NextResponse.json({ error: 'missing_fields' }, { status: 400 });
     }
-
-    // Split name into firstName and lastName for backend
-    const names = (name || '').trim().split(' ');
-    const firstName = names[0] || '';
-    const lastName = names.slice(1).join(' ') || '';
 
     // Forward to backend API
     const backendResponse = await fetch(`${BACKEND_URL}/auth/register`, {
@@ -24,6 +30,11 @@ export async function POST(req: Request) {
         password,
         firstName,
         lastName,
+        gender,
+        phone,
+        address,
+        city,
+        country,
       }),
     });
 
@@ -42,27 +53,30 @@ export async function POST(req: Request) {
       user: data.data.user,
     });
 
+    const isProd = process.env.NODE_ENV === 'production';
+    const sameSite = isProd ? 'strict' : 'lax';
+
     if (data.data?.tokens) {
       res.cookies.set('auth_token', data.data.tokens.accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        secure: isProd,
+        sameSite,
         path: '/',
         maxAge: 15 * 60,
       });
 
       res.cookies.set('refresh_token', data.data.tokens.refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        secure: isProd,
+        sameSite,
         path: '/',
         maxAge: remember ? 7 * 24 * 60 * 60 : 2 * 60 * 60,
       });
 
       res.cookies.set('user', JSON.stringify(data.data.user), {
         httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        secure: isProd,
+        sameSite,
         path: '/',
         maxAge: remember ? 7 * 24 * 60 * 60 : 2 * 60 * 60,
       });
