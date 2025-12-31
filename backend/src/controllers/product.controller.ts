@@ -108,7 +108,7 @@ export const deleteProduct = async (
 };
 
 export const getLowStock = async (
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
@@ -125,7 +125,7 @@ export const getLowStock = async (
 };
 
 export const getCategories = async (
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {

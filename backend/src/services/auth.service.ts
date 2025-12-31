@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs';
 import { prisma } from '../config/database';
 import { generateTokens, verifyRefreshToken } from '../utils/jwt';
-import { RegisterDto, LoginDto, AuthTokens, TokenPayload } from '../types';
-import { ConflictError, UnauthorizedError, NotFoundError } from '../utils/errors';
+import { RegisterDto, LoginDto, AuthTokens } from '../types';
+import { ConflictError, UnauthorizedError } from '../utils/errors';
 import logger from '../config/logger';
 
 const BCRYPT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS || '10');
