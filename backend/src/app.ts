@@ -5,7 +5,6 @@ import rateLimit from 'express-rate-limit';
 import routes from './routes';
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware';
 import { metricsMiddleware } from './middlewares/metrics.middleware';
-import logger from './config/logger';
 
 const app: Application = express();
 

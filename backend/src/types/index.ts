@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import { User } from '@prisma/client';
 
 // Extend Express Request type to include authenticated user
 export interface AuthenticatedRequest extends Request {
@@ -8,6 +7,18 @@ export interface AuthenticatedRequest extends Request {
     email: string;
     role: string;
   };
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: number;
+        email: string;
+        role: string;
+      };
+    }
+  }
 }
 
 // API Response types

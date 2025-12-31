@@ -1,14 +1,15 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
+import { AuthenticatedRequest } from '../types';
 import orderService from '../services/order.service';
 import { CreateOrderDto, UpdateOrderStatusDto } from '../types';
 
 export const getOrders = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.role === 'USER' ? req.user.userId : undefined;
+    const userId = req.user?.role === 'USER' ? req.user.id : undefined;
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
 
@@ -24,13 +25,13 @@ export const getOrders = async (
 };
 
 export const getOrderById = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     const id = parseInt(req.params.id);
-    const userId = req.user?.role === 'USER' ? req.user.userId : undefined;
+    const userId = req.user?.role === 'USER' ? req.user.id : undefined;
 
     const order = await orderService.findById(id, userId);
 
@@ -44,12 +45,12 @@ export const getOrderById = async (
 };
 
 export const createOrder = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user!.userId;
+    const userId = req.user!.id;
     const data: CreateOrderDto = req.body;
 
     const order = await orderService.create(userId, data);
@@ -64,7 +65,7 @@ export const createOrder = async (
 };
 
 export const updateOrderStatus = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
@@ -84,7 +85,7 @@ export const updateOrderStatus = async (
 };
 
 export const processPayment = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
@@ -102,12 +103,12 @@ export const processPayment = async (
 };
 
 export const getOrderStats = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.role === 'USER' ? req.user.userId : undefined;
+    const userId = req.user?.role === 'USER' ? req.user.id : undefined;
     const stats = await orderService.getOrderStats(userId);
 
     res.status(200).json({

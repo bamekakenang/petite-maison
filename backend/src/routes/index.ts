@@ -6,7 +6,7 @@ import { getMetrics } from '../middlewares/metrics.middleware';
 
 const router = Router();
 
-router.get('/health', (req: Request, res: Response) => {
+router.get('/health', (_req: Request, res: Response) => {
   res.json({
     success: true,
     data: {
@@ -17,7 +17,7 @@ router.get('/health', (req: Request, res: Response) => {
   });
 });
 
-router.get('/metrics', (req: Request, res: Response) => {
+router.get('/metrics', (_req: Request, res: Response) => {
   res.json({
     success: true,
     data: {

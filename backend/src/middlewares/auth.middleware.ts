@@ -6,7 +6,7 @@ import logger from '../config/logger';
 
 export const authenticate = (
   req: AuthenticatedRequest,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): void => {
   try {
@@ -37,7 +37,7 @@ export const authenticate = (
 };
 
 export const authorize = (...allowedRoles: string[]) => {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+  return (req: AuthenticatedRequest, _res: Response, next: NextFunction): void => {
     try {
       if (!req.user) {
         throw new UnauthorizedError('User not authenticated');
@@ -56,7 +56,7 @@ export const authorize = (...allowedRoles: string[]) => {
 
 export const optionalAuth = (
   req: AuthenticatedRequest,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): void => {
   try {

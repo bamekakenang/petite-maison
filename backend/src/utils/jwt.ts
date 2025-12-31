@@ -1,20 +1,20 @@
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions, Secret } from 'jsonwebtoken';
 import { TokenPayload, AuthTokens } from '../types';
 import logger from '../config/logger';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'fallback_refresh_secret';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '15m';
-const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
+const JWT_SECRET: Secret = process.env.JWT_SECRET || 'fallback_secret';
+const JWT_REFRESH_SECRET: Secret = process.env.JWT_REFRESH_SECRET || 'fallback_refresh_secret';
+const JWT_EXPIRES_IN = (process.env.JWT_EXPIRES_IN || '15m') as SignOptions['expiresIn'];
+const JWT_REFRESH_EXPIRES_IN = (process.env.JWT_REFRESH_EXPIRES_IN || '7d') as SignOptions['expiresIn'];
 
 export const generateTokens = (payload: TokenPayload): AuthTokens => {
-  const accessToken = jwt.sign(payload, JWT_SECRET, {
+  const accessToken = jwt.sign(payload as jwt.JwtPayload, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN,
-  });
+  } as SignOptions);
 
-  const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, {
+  const refreshToken = jwt.sign(payload as jwt.JwtPayload, JWT_REFRESH_SECRET, {
     expiresIn: JWT_REFRESH_EXPIRES_IN,
-  });
+  } as SignOptions);
 
   return { accessToken, refreshToken };
 };

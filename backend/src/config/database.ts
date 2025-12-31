@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import logger from './logger';
 
 // PrismaClient is attached to the `global` object in development to prevent
@@ -18,7 +18,7 @@ export const prisma =
 
 // Log Prisma queries in development
 if (process.env.NODE_ENV === 'development') {
-  prisma.$on('query', (e) => {
+  (prisma as any).$on('query', (e: Prisma.QueryEvent) => {
     logger.debug('Prisma Query:', {
       query: e.query,
       duration: e.duration,
@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-prisma.$on('error', (e) => {
+(prisma as any).$on('error', (e: Prisma.LogEvent) => {
   logger.error('Prisma Error:', e);
 });
 
