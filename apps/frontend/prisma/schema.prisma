@@ -37,17 +37,12 @@ model Product {
   orderItems OrderItem[]
 }
 
-enum OrderStatus {
-  PENDING
-  PAID
-  CANCELED
-}
 
 model Order {
   id              Int          @id @default(autoincrement())
   userId          Int?
   user            User?        @relation(fields: [userId], references: [id])
-  status          OrderStatus  @default(PENDING)
+  status          String       @default("PENDING")
   totalCents      Int          @default(0)
   stripeSessionId String?
   createdAt       DateTime     @default(now())
@@ -65,24 +60,13 @@ model OrderItem {
   priceCents Int
 }
 
-enum SubscriptionPlan {
-  DIGITAL
-  PAPER
-  COMPLETE
-}
-
-enum SubscriptionStatus {
-  ACTIVE
-  CANCELED
-  PAUSED
-}
 
 model Subscription {
   id                   Int                 @id @default(autoincrement())
   userId               Int
   user                 User                @relation(fields: [userId], references: [id])
-  plan                 SubscriptionPlan
-  status               SubscriptionStatus  @default(ACTIVE)
+  plan                 String              @default("DIGITAL")
+  status               String              @default("ACTIVE")
   stripeSubscriptionId String?
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @updatedAt
