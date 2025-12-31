@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Debug workspace
         working-directory: ./backend
         run: |
@@ -24,22 +24,26 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - name: Install dependencies
-        run: cd backend && npm ci
-      
+        working-directory: ./backend
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
       - name: Run ESLint
-        run: cd backend && npm run lint
-      
+        working-directory: ./backend
+        run: npm run lint
+
       - name: TypeScript Check
-        run: cd backend && npx tsc --noEmit
+        working-directory: ./backend
+        run: npx tsc --noEmit
 
   lint-frontend:
     name: Frontend Linting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Debug workspace
         working-directory: ./apps/frontend
         run: |
@@ -51,12 +55,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - name: Install dependencies
-        run: cd apps/frontend && npm ci
-      
+        working-directory: ./apps/frontend
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
       - name: TypeScript Check
-        run: cd apps/frontend && npx tsc --noEmit
+        working-directory: ./apps/frontend
+        run: npx tsc --noEmit
 
   test-backend:
     name: Backend Tests
@@ -64,7 +71,7 @@ jobs:
     needs: lint-backend
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Debug workspace
         working-directory: ./backend
         run: |
@@ -76,25 +83,29 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - name: Install dependencies
         working-directory: ./backend
-        run: npm ci
-      
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
       - name: Generate Prisma Client
-        run: cd backend && npm run prisma:generate
-      
+        working-directory: ./backend
+        run: npm run prisma:generate
+
       - name: Run tests with coverage
-        run: cd backend && npm test -- --coverage
-      
+        working-directory: ./backend
+        run: npm test -- --coverage
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           files: ./backend/coverage/lcov.info
           flags: backend
           name: backend-coverage
-      
+
       - name: Check coverage threshold
+        working-directory: ./backend
         run: |
           COVERAGE=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
           if (( $(echo "$COVERAGE < 70" | bc -l) )); then
@@ -107,7 +118,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Debug workspace
         working-directory: ./backend
         run: |
@@ -119,15 +130,17 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - name: Install dependencies
         working-directory: ./backend
-        run: npm ci
-      
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
       - name: Run npm audit
-        run: cd backend && npm audit --audit-level=moderate
+        working-directory: ./backend
+        run: npm audit --audit-level=moderate
         continue-on-error: true
-      
+
       - name: Run Snyk Security Scan
         uses: snyk/actions/node@master
         continue-on-error: true
@@ -141,7 +154,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Debug workspace
         working-directory: ./apps/frontend
         run: |
@@ -153,13 +166,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - name: Install dependencies
         working-directory: ./apps/frontend
-        run: npm ci
-      
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
       - name: Run npm audit
-        run: cd apps/frontend && npm audit --audit-level=moderate
+        working-directory: ./apps/frontend
+        run: npm audit --audit-level=moderate
         continue-on-error: true
 
   build-backend:
@@ -168,7 +183,7 @@ jobs:
     needs: [lint-backend, test-backend]
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Debug workspace
         working-directory: ./backend
         run: |
@@ -180,18 +195,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - name: Install dependencies
         working-directory: ./backend
-        run: npm ci
-      
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
       - name: Generate Prisma Client
         working-directory: ./backend
         run: npm run prisma:generate
-      
+
       - name: Build
-        run: cd backend && npm run build
-      
+        working-directory: ./backend
+        run: npm run build
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -204,7 +221,7 @@ jobs:
     needs: [lint-frontend]
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Debug workspace
         working-directory: ./apps/frontend
         run: |
@@ -216,16 +233,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - name: Install dependencies
         working-directory: ./apps/frontend
-        run: npm ci
-      
-        run: cd apps/frontend && npx prisma generate
-      
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
+      - name: Generate Prisma Client
+        working-directory: ./apps/frontend
+        run: npx prisma generate
+
       - name: Build
-        run: cd apps/frontend && npm run build
-      
+        working-directory: ./apps/frontend
+        run: npm run build
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -265,14 +286,14 @@ jobs:
     if: github.ref == 'refs/heads/develop'
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      
+
       - name: Install Artillery
         run: npm install -g artillery
-      
+
       - name: Run load tests
         run: artillery run load-test.yml
