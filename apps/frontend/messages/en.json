@@ -1,0 +1,171 @@
+{
+  "nav": {
+    "home": "Home",
+    "shop": "Shop",
+    "zine": "Zine",
+    "contact": "Contact",
+    "login": "Sign in",
+    "orders": "My orders",
+    "unsubscribe": "Unsubscribe from zine"
+  },
+  "cta": {
+    "explore": "Explore the shop",
+    "zine": "Read the zine"
+  },
+  "hero": {
+    "title": "La Petite Maison de l'Épouvante",
+    "subtitle": "Fanzine, exclusive figures & horror gems curated by enthusiasts."
+  },
+  "search": {
+    "placeholder": "Search a product…"
+  },
+  "featured": "Featured products",
+  "account": "Account",
+  "cart": "Cart",
+  "addToCart": "Add to cart",
+  "pages": {
+    "products": {
+      "title": "Horror Shop",
+      "subtitle": "Discover our selection of horror figures, games, blu-rays and comics",
+      "categories": "Categories",
+      "searchPlaceholder": "Search for a product...",
+      "sortByName": "Sort by name",
+      "sortByPriceAsc": "Price ascending",
+      "sortByPriceDesc": "Price descending",
+      "sortByNewest": "Newest"
+    },
+    "contact": {
+      "title": "Contact",
+      "subtitle": "A question? Send us a message via the form.",
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "message": "Message",
+        "send": "Send"
+      },
+      "info": {
+        "title": "Information",
+        "email": "Email",
+        "hours": "Hours",
+        "address": "Address"
+      },
+      "backHome": "Back to home"
+    },
+    "cart": {
+      "title": "Cart",
+      "empty": "Your cart is empty.",
+      "continueShopping": "Continue shopping",
+      "remove": "Remove",
+      "clear": "Clear",
+      "checkout": "Checkout"
+    },
+    "product": {
+      "descriptionFallback": "A rare item curated by us. Detailed description coming soon!"
+    },
+    "fanzine": {
+      "title": "The Zine",
+      "description": "Our handcrafted publication devoted to horror and fantasy.",
+      "frequency": "Quarterly",
+      "since": "Since 2020",
+      "genres": "Cinema, comics, games, literature",
+      "latestIssues": "Latest issues",
+      "readOnline": "Read online",
+      "soldOut": "Sold out",
+      "subscriptionTitle": "Subscribe",
+      "subscriptionSubtitle": "Choose your plan",
+      "plans": {
+        "digital": {"name": "Digital", "duration": "year"},
+        "paper": {"name": "Paper", "duration": "year"},
+        "complete": {"name": "Complete", "duration": "year"}
+      },
+      "popular": "Popular",
+      "subscribe": "Subscribe",
+      "about": {
+        "title": "About",
+        "historyTitle": "Our history",
+        "historyText": "A team of enthusiasts has been publishing this zine since 2020.",
+        "contentTitle": "Content",
+        "contentText": "Features, interviews, reviews and original art.",
+        "team": "Volunteer editors and guests"
+      }
+    },
+    "checkout": {
+      "title": "Checkout",
+      "contactTitle": "Contact",
+      "addressTitle": "Shipping address",
+      "fields": {"email":"Email","name":"Name","phone":"Phone","line1":"Address","city":"City","postal":"Postal code","country":"Country"},
+      "method": "Payment method",
+      "methods": {"card": "Credit card"},
+      "card": {"number": "Card number", "exp": "Expiry", "name": "Name on card"},
+      "payNow": "Pay now",
+      "summary": "Summary",
+      "total": "Total",
+      "redirecting": "Redirecting to Stripe..."
+    },
+    "confirmation": {
+      "title": "Thank you!",
+      "subtitle": "Your order has been confirmed.",
+      "backToShop": "Back to shop"
+    },
+    "auth": {
+      "login": {
+        "title": "Sign in",
+        "email": "Email",
+        "password": "Password",
+        "remember": "Remember me",
+        "submit": "Sign in",
+        "errors": { "failed": "Sign in failed. Check your credentials." }
+      }
+    },
+    "auth": {
+      "login": {
+        "title": "Sign in",
+        "email": "Email",
+        "password": "Password",
+        "remember": "Remember me",
+        "submit": "Sign in",
+        "errors": { "failed": "Sign in failed. Check your credentials." }
+      },
+      "register": {
+        "title": "Sign up",
+        "name": "Name",
+        "namePlaceholder": "Your name",
+        "submit": "Create account",
+        "errors": { "failed": "Sign up failed. Please try again." }
+      }
+    }
+  },
+  "category": {
+    "all": "All",
+    "figurines": "Figures",
+    "games": "Games",
+    "bluray": "Blu-ray",
+    "comics": "Comics"
+  },
+  "products": {
+    "horrificFigurine1": "Classic Horror Figure #1",
+    "horrificFigurine2": "Ancient Monster Figure #2",
+    "horrificFigurine3": "Creature Figure #3",
+    "horrificFigurine4": "Demon Figure #4",
+    "monsterCreature": "Abyssal Creature",
+    "pumpkinMask": "Evil Pumpkin Mask",
+    "michaelMyersMask": "Michael Myers Mask",
+    "bougeoirSquelette": "Skeleton Candleholder",
+    "bougieCercueil": "Skeleton Coffin Candle",
+    "pumpkinDecoration": "Pumpkin Decorations",
+    "horrorScene": "Horror Scene Collection",
+    "horrorBoardGame1": "Horror Board Game",
+    "horrorBoardGame2": "Survival Horror Deluxe",
+    "horrorBoardGame3": "Mysteries & Terrors",
+    "classicHorrorBluray1": "Classic Horror Collection Vol.1",
+    "classicHorrorBluray2": "Cursed Films Restored",
+    "classicHorrorBluray3": "Anthology of Fear",
+    "horrorComic1": "Nocturnal Terrors Comic #1",
+    "horrorComic2": "Dark Legends Comic #2"
+  },
+  "errors": {"checkoutFailed": "Payment failed. Please try again or check your Stripe keys."},
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next"
+  }
+}

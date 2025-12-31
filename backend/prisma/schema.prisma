@@ -1,0 +1,142 @@
+// Schema Prisma - Backend Petite Maison
+// Fonctionnalité 1: Gestion du catalogue produits
+// Fonctionnalité 2: Gestion des commandes
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ========== User Management ==========
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  passwordHash  String
+  firstName     String?
+  lastName      String?
+  role          String    @default("CUSTOMER")
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  orders        Order[]
+  carts         Cart[]
+  refreshTokens RefreshToken[]
+  
+  @@index([email])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  
+  @@index([token])
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+// ========== Fonctionnalité 1: Gestion Catalogue Produits ==========
+model Product {
+  id          Int      @id @default(autoincrement())
+  sku         String   @unique
+  name        String
+  description String?
+  price       Float
+  stock       Int      @default(0)
+  category    String
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  minStock    Int      @default(10) // Seuil d'alerte stock
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
+  
+  @@index([sku])
+  @@index([category])
+  @@index([isActive])
+  @@map("products")
+}
+
+// ========== Fonctionnalité 2: Gestion des Commandes ==========
+model Order {
+  id              Int         @id @default(autoincrement())
+  orderNumber     String      @unique
+  userId          Int
+  user            User        @relation(fields: [userId], references: [id])
+  status          String      @default("PENDING")
+  totalAmount     Float
+  shippingAddress String
+  billingAddress  String
+  paymentMethod   String      @default("CARD")
+  paymentStatus   String      @default("PENDING")
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  // Relations
+  items           OrderItem[]
+  
+  @@index([orderNumber])
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id          Int      @id @default(autoincrement())
+  orderId     Int
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   Int
+  product     Product  @relation(fields: [productId], references: [id])
+  quantity    Int
+  unitPrice   Float
+  totalPrice  Float
+  createdAt   DateTime @default(now())
+  
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  
+  // Relations
+  items     CartItem[]
+  
+  @@map("carts")
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  cartId    Int
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([cartId, productId])
+  @@index([cartId])
+  @@index([productId])
+  @@map("cart_items")
+}

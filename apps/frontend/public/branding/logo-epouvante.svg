@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <defs>
+    <linearGradient id="night" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b0b0b"/>
+      <stop offset="100%" stop-color="#111418"/>
+    </linearGradient>
+    <radialGradient id="blood" cx="70%" cy="25%" r="40%">
+      <stop offset="0%" stop-color="#ff3b3b"/>
+      <stop offset="60%" stop-color="#b91c1c"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="160" height="160" rx="22" fill="url(#night)"/>
+  <circle cx="118" cy="36" r="24" fill="url(#blood)" filter="url(#glow)"/>
+  <path d="M36 94l44-36 44 36v34h-14v-26H50v26H36z" fill="#e5e7eb"/>
+  <g fill="#0b0b0b">
+    <rect x="58" y="98" width="12" height="14"/>
+    <rect x="90" y="98" width="12" height="14"/>
+  </g>
+  <path d="M24 64c8 6 11 10 16 14M128 72c8 6 11 10 16 14" stroke="#e5e7eb" stroke-width="3" fill="none"/>
+  <path d="M36 125c20 2 40 2 88 0c-4 8-14 17-44 17s-40-9-44-17z" fill="#ef4444" opacity="0.12"/>
+</svg>

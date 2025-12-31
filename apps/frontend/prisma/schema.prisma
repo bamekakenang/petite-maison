@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  orders       Order[]
+  subscriptions Subscription[]
+  sessions     Session[]
+  cart         Cart?
+}
+
+model Product {
+  id         Int       @id @default(autoincrement())
+  sku        String    @unique
+  slug       String    @unique
+  nameKey    String
+  priceCents Int
+  image      String
+  category   String
+  stock      Int       @default(100)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  orderItems OrderItem[]
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELED
+}
+
+model Order {
+  id              Int          @id @default(autoincrement())
+  userId          Int?
+  user            User?        @relation(fields: [userId], references: [id])
+  status          OrderStatus  @default(PENDING)
+  totalCents      Int          @default(0)
+  stripeSessionId String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id         Int     @id @default(autoincrement())
+  orderId    Int
+  order      Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId  Int
+  product    Product @relation(fields: [productId], references: [id])
+  qty        Int
+  priceCents Int
+}
+
+enum SubscriptionPlan {
+  DIGITAL
+  PAPER
+  COMPLETE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAUSED
+}
+
+model Subscription {
+  id                   Int                 @id @default(autoincrement())
+  userId               Int
+  user                 User                @relation(fields: [userId], references: [id])
+  plan                 SubscriptionPlan
+  status               SubscriptionStatus  @default(ACTIVE)
+  stripeSubscriptionId String?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model Cart {
+  userId    Int     @id
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  json      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

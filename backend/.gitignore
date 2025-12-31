@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build
+dist/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Database
+*.db
+*.db-journal
+prisma/dev.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Tests
+coverage/
+.nyc_output/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+*.tmp
+.cache/

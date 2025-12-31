@@ -1,0 +1,171 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "shop": "Boutique",
+    "zine": "Fanzine",
+    "contact": "Contact",
+    "login": "Connexion",
+    "orders": "Mes commandes",
+    "unsubscribe": "Se désabonner du fanzine"
+  },
+  "cta": {
+    "explore": "Découvrir la boutique",
+    "zine": "Voir le fanzine"
+  },
+  "hero": {
+    "title": "La Petite Maison de l'Épouvante",
+    "subtitle": "Fanzine, figurines exclusives & pépites horrifiques sélectionnées par des passionnés."
+  },
+  "search": {
+    "placeholder": "Rechercher un produit…"
+  },
+  "featured": "Produits en vedette",
+  "account": "Compte",
+  "cart": "Panier",
+  "addToCart": "Ajouter au panier",
+  "pages": {
+    "products": {
+      "title": "Boutique Horreur",
+      "subtitle": "Découvrez notre sélection de figurines, jeux, blu-ray et BD horrifiques",
+      "categories": "Catégories",
+      "searchPlaceholder": "Rechercher un produit...",
+      "sortByName": "Trier par nom",
+      "sortByPriceAsc": "Prix croissant",
+      "sortByPriceDesc": "Prix décroissant",
+      "sortByNewest": "Nouveautés"
+    },
+    "contact": {
+      "title": "Contact",
+      "subtitle": "Une question ? Écrivez-nous via le formulaire.",
+      "form": {
+        "name": "Nom",
+        "email": "Email",
+        "message": "Message",
+        "send": "Envoyer"
+      },
+      "info": {
+        "title": "Informations",
+        "email": "Email",
+        "hours": "Horaires",
+        "address": "Adresse"
+      },
+      "backHome": "Retour à l'accueil"
+    },
+    "cart": {
+      "title": "Panier",
+      "empty": "Votre panier est vide.",
+      "continueShopping": "Continuer vos achats",
+      "remove": "Retirer",
+      "clear": "Vider",
+      "checkout": "Commander"
+    },
+    "product": {
+      "descriptionFallback": "Un objet rare sélectionné par nos soins. Bientôt une description détaillée!"
+    },
+    "fanzine": {
+      "title": "Le Fanzine",
+      "description": "Notre publication artisanale consacrée à l'horreur et au fantastique.",
+      "frequency": "Trimestriel",
+      "since": "Depuis 2020",
+      "genres": "Cinéma, BD, jeux, littérature",
+      "latestIssues": "Derniers numéros",
+      "readOnline": "Lire en ligne",
+      "soldOut": "Épuisé",
+      "subscriptionTitle": "S'abonner",
+      "subscriptionSubtitle": "Choisissez votre formule",
+      "plans": {
+        "digital": {"name": "Numérique", "duration": "an"},
+        "paper": {"name": "Papier", "duration": "an"},
+        "complete": {"name": "Complet", "duration": "an"}
+      },
+      "popular": "Populaire",
+      "subscribe": "S'abonner",
+      "about": {
+        "title": "À propos",
+        "historyTitle": "Notre histoire",
+        "historyText": "Une équipe de passionnés publie ce fanzine depuis 2020.",
+        "contentTitle": "Contenus",
+        "contentText": "Dossiers, interviews, critiques et illustrations originales.",
+        "team": "Rédaction bénévole et invités"
+      }
+    },
+    "checkout": {
+      "title": "Paiement",
+      "contactTitle": "Coordonnées",
+      "addressTitle": "Adresse de livraison",
+      "fields": {"email":"Email","name":"Nom","phone":"Téléphone","line1":"Adresse","city":"Ville","postal":"Code postal","country":"Pays"},
+      "method": "Moyen de paiement",
+      "methods": {"card": "Carte bancaire"},
+      "card": {"number": "Numéro de carte", "exp": "Expiration", "name": "Nom sur la carte"},
+      "payNow": "Payer maintenant",
+      "summary": "Récapitulatif",
+      "total": "Total",
+      "redirecting": "Redirection vers Stripe..."
+    },
+    "confirmation": {
+      "title": "Merci !",
+      "subtitle": "Votre commande a été confirmée.",
+      "backToShop": "Retour à la boutique"
+    },
+    "auth": {
+      "login": {
+        "title": "Connexion",
+        "email": "Email",
+        "password": "Mot de passe",
+        "remember": "Se souvenir de moi",
+        "submit": "Se connecter",
+        "errors": { "failed": "Échec de la connexion. Vérifiez vos identifiants." }
+      }
+    },
+    "auth": {
+      "login": {
+        "title": "Connexion",
+        "email": "Email",
+        "password": "Mot de passe",
+        "remember": "Se souvenir de moi",
+        "submit": "Se connecter",
+        "errors": { "failed": "Échec de la connexion. Vérifiez vos identifiants." }
+      },
+      "register": {
+        "title": "Inscription",
+        "name": "Nom",
+        "namePlaceholder": "Votre nom",
+        "submit": "Créer un compte",
+        "errors": { "failed": "Échec de l'inscription. Réessayez." }
+      }
+    }
+  },
+  "category": {
+    "all": "Tous",
+    "figurines": "Figurines",
+    "games": "Jeux",
+    "bluray": "Blu-ray",
+    "comics": "BD"
+  },
+  "products": {
+    "horrificFigurine1": "Figurine Horreur Classique #1",
+    "horrificFigurine2": "Figurine Monstre Ancien #2",
+    "horrificFigurine3": "Figurine Créature #3",
+    "horrificFigurine4": "Figurine Démon #4",
+    "monsterCreature": "Créature des Abysses",
+    "pumpkinMask": "Masque Citrouille Maléfique",
+    "michaelMyersMask": "Masque Michael Myers",
+    "bougeoirSquelette": "Bougeoir Squelette",
+    "bougieCercueil": "Bougie Cercueil Squelette",
+    "pumpkinDecoration": "Décoration Citrouilles",
+    "horrorScene": "Scène d'Horreur Collection",
+    "horrorBoardGame1": "Jeu Plateau Épouvante",
+    "horrorBoardGame2": "Survival Horror Deluxe",
+    "horrorBoardGame3": "Mystères & Terreurs",
+    "classicHorrorBluray1": "Collection Horreur Classique Vol.1",
+    "classicHorrorBluray2": "Films Maudits Restaurés",
+    "classicHorrorBluray3": "Anthology of Fear",
+    "horrorComic1": "BD Terreurs Nocturnes #1",
+    "horrorComic2": "BD Légendes Sombres #2"
+  },
+  "errors": {"checkoutFailed": "Le paiement a échoué. Réessayez ou vérifiez vos clés Stripe."},
+  "pagination": {
+    "previous": "Précédent",
+    "next": "Suivant"
+  }
+}

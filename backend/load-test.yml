@@ -1,0 +1,102 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm up"
+    - duration: 120
+      arrivalRate: 20
+      name: "Ramp up load"
+    - duration: 180
+      arrivalRate: 50
+      name: "Sustained load"
+  processor: "./load-test-processor.js"
+  variables:
+    adminEmail: "admin@petitemaison.fr"
+    adminPassword: "password123"
+
+scenarios:
+  # Scenario 1: Product Browsing (70% des utilisateurs)
+  - name: "Browse Products"
+    weight: 70
+    flow:
+      - get:
+          url: "/api/v1/health"
+      - get:
+          url: "/api/v1/products?page=1&limit=10"
+          capture:
+            - json: "$.data[0].id"
+              as: "productId"
+      - get:
+          url: "/api/v1/products/{{ productId }}"
+      - get:
+          url: "/api/v1/products/categories"
+
+  # Scenario 2: User Registration & Login (15% des utilisateurs)
+  - name: "Register and Login"
+    weight: 15
+    flow:
+      - post:
+          url: "/api/v1/auth/login"
+          json:
+            email: "{{ adminEmail }}"
+            password: "{{ adminPassword }}"
+          capture:
+            - json: "$.data.tokens.accessToken"
+              as: "authToken"
+      - get:
+          url: "/api/v1/products?page=1&limit=5"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+
+  # Scenario 3: Create Order (10% des utilisateurs)
+  - name: "Create Order"
+    weight: 10
+    flow:
+      - post:
+          url: "/api/v1/auth/login"
+          json:
+            email: "{{ adminEmail }}"
+            password: "{{ adminPassword }}"
+          capture:
+            - json: "$.data.tokens.accessToken"
+              as: "authToken"
+      - get:
+          url: "/api/v1/products?page=1&limit=1"
+          capture:
+            - json: "$.data[0].id"
+              as: "productId"
+      - post:
+          url: "/api/v1/orders"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            items:
+              - productId: "{{ productId }}"
+                quantity: 2
+            shippingAddress: "123 Test Street, Paris 75001"
+            billingAddress: "123 Test Street, Paris 75001"
+            paymentMethod: "CARD"
+
+  # Scenario 4: Admin Operations (5% des utilisateurs)
+  - name: "Admin Operations"
+    weight: 5
+    flow:
+      - post:
+          url: "/api/v1/auth/login"
+          json:
+            email: "{{ adminEmail }}"
+            password: "{{ adminPassword }}"
+          capture:
+            - json: "$.data.tokens.accessToken"
+              as: "authToken"
+      - get:
+          url: "/api/v1/orders?page=1&limit=10"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+      - get:
+          url: "/api/v1/orders/stats"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+      - get:
+          url: "/api/v1/metrics"
