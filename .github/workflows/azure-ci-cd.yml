@@ -1,0 +1,56 @@
+name: CI-CD Azure WebApps
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: 20
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app:
+          - name: backend
+            path: backend
+            app_name_var: BACKEND_APP_NAME
+          - name: frontend
+            path: apps/frontend
+            app_name_var: FRONTEND_APP_NAME
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ${{ matrix.app.path }}/package-lock.json
+
+      - name: Install deps
+        working-directory: ${{ matrix.app.path }}
+        run: npm ci
+
+      - name: Build
+        working-directory: ${{ matrix.app.path }}
+        run: npm run build
+
+      # - name: Test
+      #   working-directory: ${{ matrix.app.path }}
+      #   run: npm test -- --runInBand
+
+      - name: Zip package
+        run: |
+          cd ${{ matrix.app.path }}
+          zip -r ../${{ matrix.app.name }}.zip .
+
+      - name: Deploy to Azure WebApp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ secrets[matrix.app.app_name_var] }}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          package: ${{ matrix.app.name }}.zip
