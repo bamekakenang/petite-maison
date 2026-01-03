@@ -30,6 +30,7 @@ dist/
 build/
 .next/
 out/
+apps/frontend/tsconfig.tsbuildinfo
 
 # Testing
 coverage/
