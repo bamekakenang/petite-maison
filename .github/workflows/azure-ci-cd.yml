@@ -50,10 +50,10 @@ jobs:
           cd ${{ matrix.app.path }}
           zip -r ../${{ matrix.app.name }}.zip .
 
-      - name: Azure login
+      - name: Azure login (publish profile)
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          publish-profile: ${{ secrets[matrix.app.publish_secret_var] }}
 
       - name: Deploy with AZ CLI
         run: |
