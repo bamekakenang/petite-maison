@@ -49,6 +49,12 @@ coverage/
 .cache/
 tmp/
 
+# Azure publish profiles / deployment artifacts (do not commit)
+*.publishsettings
+*.publishsettings.new
+backend.zip
+frontend.zip
+
 # OS
 Thumbs.db
 .DS_Store
