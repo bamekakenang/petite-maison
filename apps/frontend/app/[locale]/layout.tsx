@@ -20,6 +20,10 @@ export const metadata = {
 async function Header({locale}:{locale:string}){
   const t = await getTranslations();
   const user = await currentUser();
+  const displayName =
+    user?.name ||
+    [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() ||
+    user?.email;
 
   const getInitials = (input?: string | null) => {
     if (!input) return '?';
@@ -43,7 +47,7 @@ async function Header({locale}:{locale:string}){
             <Logo size={28} />
             <span className="text-lg font-semibold">La Petite Maison</span>
           </Link>
-          <form role="search" className="hidden md:block" action={`/${locale}/recherche`}>
+          <form role="search" className="hidden md:block" action={`/${locale}/produits`} method="get">
             <label className="sr-only" htmlFor="q">{t('search.placeholder')}</label>
             <input id="q" name="q" placeholder={t('search.placeholder')} className="w-72 border rounded-xl px-3 py-2"/>
           </form>
@@ -55,7 +59,7 @@ async function Header({locale}:{locale:string}){
             {user ? (
               <UserMenu 
                 locale={locale}
-                displayName={user.name || user.email}
+                displayName={displayName}
                 accountLabel={t('account')}
                 ordersLabel={t('nav.orders')}
                 unsubscribeLabel={t('nav.unsubscribe')}

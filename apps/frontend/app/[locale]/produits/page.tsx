@@ -13,18 +13,26 @@ const categories = [
 export default async function ProduitsPage({ searchParams }: { searchParams?: { q?: string } }) {
   const t = await getTranslations();
   const q = (searchParams?.q || '').trim();
-  const items = await prisma.product.findMany({
-    where: q
-      ? {
-          OR: [
-            { nameKey: { contains: q, mode: 'insensitive' } },
-            { sku: { contains: q, mode: 'insensitive' } },
-            { category: { contains: q, mode: 'insensitive' } },
-          ],
-        }
-      : undefined,
+  const qLower = q.toLowerCase();
+
+  // Fetch all products (small catalog) then filter on translated names + sku/slug/category
+  const allProducts = await prisma.product.findMany({
     orderBy: { id: 'asc' },
   });
+
+  const items = q
+    ? allProducts.filter((p) => {
+        const haystack = [
+          t(p.nameKey),
+          p.sku,
+          p.slug ?? '',
+          p.category,
+        ]
+          .join(' ')
+          .toLowerCase();
+        return haystack.includes(qLower);
+      })
+    : allProducts;
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
@@ -51,14 +59,23 @@ export default async function ProduitsPage({ searchParams }: { searchParams?: { 
 
       {/* Barre de recherche et tri */}
       <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <form className="flex-1 max-w-md" role="search">
-          <input
-            type="search"
-            name="q"
-            defaultValue={q}
-            placeholder={t('pages.products.searchPlaceholder')}
-            className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900"
-          />
+        <form className="flex-1 max-w-md" role="search" method="get">
+          <div className="flex items-stretch">
+            <input
+              type="search"
+              name="q"
+              defaultValue={q}
+              placeholder={t('pages.products.searchPlaceholder')}
+              className="w-full px-4 py-2 border border-r-0 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-neutral-900"
+            />
+            <button
+              type="submit"
+              aria-label={t('pages.products.searchPlaceholder')}
+              className="px-3 bg-neutral-900 text-white rounded-r-xl border border-neutral-900 hover:bg-red-700 transition flex items-center justify-center"
+            >
+              🔍
+            </button>
+          </div>
         </form>
         <select className="px-4 py-2 border rounded-xl bg-white">
           <option value="name">{t('pages.products.sortByName')}</option>

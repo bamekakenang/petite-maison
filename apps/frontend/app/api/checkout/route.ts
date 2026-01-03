@@ -19,14 +19,13 @@ export async function POST(req: Request) {
     // Derive origin
     const origin = originFromBody || req.headers.get('origin') || req.headers.get('referer')?.replace(/\/(fr|en|[a-z]{2})(\/.*)?$/, '') || 'http://localhost:3001';
 
-    // Require authentication
+    // Require authentication (use user cookie set by login/register)
     let userId: number | undefined;
     try {
-      const token = cookies().get('auth_token')?.value;
-      if (token) {
-        const { prisma } = await import('../../../lib/prisma');
-        const sess = await prisma.session.findUnique({ where: { token } });
-        if (sess && sess.expiresAt > new Date()) userId = sess.userId;
+      const userRaw = cookies().get('user')?.value;
+      if (userRaw) {
+        const parsed = JSON.parse(userRaw);
+        if (parsed?.id) userId = parsed.id;
       }
     } catch {}
     if (!userId) {
