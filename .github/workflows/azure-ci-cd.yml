@@ -50,9 +50,16 @@ jobs:
           cd ${{ matrix.app.path }}
           zip -r ../${{ matrix.app.name }}.zip .
 
-      - name: Deploy to Azure WebApp
-        uses: azure/webapps-deploy@v3
+      - name: Azure login
+        uses: azure/login@v1
         with:
-          app-name: ${{ secrets[matrix.app.app_name_var] }}
-          publish-profile: ${{ secrets[matrix.app.publish_secret_var] }}
-          package: ${{ matrix.app.name }}.zip
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy with AZ CLI
+        run: |
+          az webapp deploy \
+            --resource-group petitemaison-rg \
+            --name ${{ secrets[matrix.app.app_name_var] }} \
+            --src-path ${{ matrix.app.name }}.zip \
+            --type zip \
+            --timeout 600
