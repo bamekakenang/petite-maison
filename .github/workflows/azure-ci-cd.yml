@@ -53,10 +53,20 @@ jobs:
       - name: Build
         working-directory: apps/frontend
         run: npm run build
-      - name: Zip package
+      - name: Package standalone build
         run: |
-          cd apps/frontend
-          zip -r ../../frontend.zip .
+          rm -rf frontend-deploy
+          mkdir -p frontend-deploy/.next
+
+          # Next.js standalone output (server + minimal node_modules)
+          cp -R apps/frontend/.next/standalone/* frontend-deploy/
+
+          # Static assets (must be copied separately)
+          cp -R apps/frontend/.next/static frontend-deploy/.next/static
+          cp -R apps/frontend/public frontend-deploy/public
+
+          cd frontend-deploy
+          zip -r ../frontend.zip .
       - name: Deploy to Azure WebApp (frontend)
         uses: azure/webapps-deploy@v3
         with:
