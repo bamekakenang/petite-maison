@@ -19,7 +19,7 @@ async function fetchProducts(q?: string, category?: string) {
     params.set('inStock', 'true');
 
     const url = `${API_URL}/products${params.toString() ? `?${params.toString()}` : ''}`;
-    console.log('[produits] Fetching from API:', url);
+    console.log('[produits] Fetching from:', url);
     
     const response = await fetch(url, {
       cache: 'no-store',
@@ -28,14 +28,13 @@ async function fetchProducts(q?: string, category?: string) {
 
     if (response.ok) {
       const data = await response.json();
-      console.log('[produits] API returned', (data.data || []).length, 'products');
       return (data.data || []).sort((a: any, b: any) => a.id - b.id);
     }
     
     console.warn('[produits] API returned non-OK:', response.status);
     return null;
   } catch (error) {
-    console.warn('[produits] Failed to fetch from API - using fallback');
+    console.error('[produits] Failed to fetch from API:', error);
     return null;
   }
 }
