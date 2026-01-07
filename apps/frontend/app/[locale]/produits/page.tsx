@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { ProductCard } from '../../../components/ProductCard';
-import { products } from '../../../data/products';
+import { productsApi } from '../../../lib/api/products';
 
 const categories = [
   { id: 'all', nameKey: 'category.all' },
@@ -10,28 +10,25 @@ const categories = [
   { id: 'comics', nameKey: 'category.comics' }
 ];
 
-export default async function ProduitsPage({ searchParams }: { searchParams?: { q?: string } }) {
+export default async function ProduitsPage({ params, searchParams }: { params: { locale: string }; searchParams?: { q?: string; category?: string } }) {
   const t = await getTranslations();
   const q = (searchParams?.q || '').trim();
-  const qLower = q.toLowerCase();
+  const categoryFilter = (searchParams?.category || 'all').trim();
 
-  // NOTE: We intentionally avoid Prisma here.
-  // In production the frontend may not have DATABASE_URL configured.
-  const allProducts = products.slice().sort((a, b) => a.id - b.id);
-
-  const items = q
-    ? allProducts.filter((p) => {
-        const haystack = [
-          t(p.nameKey),
-          p.sku,
-          p.slug ?? '',
-          p.category,
-        ]
-          .join(' ')
-          .toLowerCase();
-        return haystack.includes(qLower);
-      })
-    : allProducts;
+  // Fetch products from backend API
+  let items: any[] = [];
+  try {
+    const response = await productsApi.getProducts({
+      search: q || undefined,
+      category: categoryFilter !== 'all' ? categoryFilter : undefined,
+      inStock: true,
+    });
+    items = (response.data || []).sort((a, b) => a.id - b.id);
+  } catch (error) {
+    console.error('Failed to fetch products:', error);
+    // Fallback: empty list
+    items = [];
+  }
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
@@ -45,14 +42,25 @@ export default async function ProduitsPage({ searchParams }: { searchParams?: { 
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-4">{t('pages.products.categories')}</h2>
         <div className="flex flex-wrap gap-2">
-          {categories.map(category => (
-            <button
-              key={category.id}
-              className="px-4 py-2 rounded-full border hover:bg-neutral-100 transition-colors"
-            >
-              {t(category.nameKey)}
-            </button>
-          ))}
+          {categories.map(category => {
+            const isActive = categoryFilter === category.id;
+            const href = category.id === 'all' 
+              ? `/${params.locale}/produits${q ? `?q=${encodeURIComponent(q)}` : ''}`
+              : `/${params.locale}/produits?category=${category.id}${q ? `&q=${encodeURIComponent(q)}` : ''}`;
+            return (
+              <a
+                key={category.id}
+                href={href}
+                className={`px-4 py-2 rounded-full border transition-colors ${
+                  isActive
+                    ? 'bg-neutral-900 text-white border-neutral-900'
+                    : 'border-neutral-300 hover:bg-neutral-100'
+                }`}
+              >
+                {t(category.nameKey)}
+              </a>
+            );
+          })}
         </div>
       </div>
 
@@ -86,15 +94,21 @@ export default async function ProduitsPage({ searchParams }: { searchParams?: { 
 
       {/* Grille de produits */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {items.map((product) => (
-          <ProductCard
-            key={product.id}
-            sku={product.sku}
-            title={t(product.nameKey)}
-            price={product.price}
-            image={product.image}
-          />
-        ))}
+        {items.length > 0 ? (
+          items.map((product) => (
+            <ProductCard
+              key={product.id}
+              sku={product.sku}
+              title={product.name}
+              price={product.price}
+              image={product.imageUrl}
+            />
+          ))
+        ) : (
+          <div className="col-span-full text-center py-12">
+            <p className="text-neutral-600">{t('pages.products.noProducts')}</p>
+          </div>
+        )}
       </div>
 
       {/* Pagination */}

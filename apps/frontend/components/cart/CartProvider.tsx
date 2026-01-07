@@ -41,26 +41,45 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const res = await fetch('/api/cart/load', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
-          if (!cancelled && Array.isArray(data?.items) && data.items.length) {
-            setItems(data.items);
-            setReady(true);
-            return;
+          if (!cancelled && Array.isArray(data?.items)) {
+            if (data.items.length > 0) {
+              setItems(data.items);
+              setReady(true);
+              return;
+            }
           }
         }
-      } catch {}
+      } catch (e) {
+        console.debug('Failed to load cart from server:', e instanceof Error ? e.message : 'unknown');
+      }
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) setItems(JSON.parse(raw));
-      } catch {}
-      setReady(true);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setItems(parsed);
+          }
+        }
+      } catch (e) {
+        console.debug('Failed to load cart from localStorage:', e instanceof Error ? e.message : 'unknown');
+      }
+      if (!cancelled) setReady(true);
     })();
     return () => { cancelled = true; };
   }, []);
 
   // Persist
   const persist = () => {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); } catch {}
-    try { fetch('/api/cart/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items }) }); } catch {}
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); } catch (e) { console.warn('Failed to save cart to localStorage:', e); }
+    try { 
+      fetch('/api/cart/save', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ items }) 
+      }).catch(e => console.warn('Failed to save cart to server:', e));
+    } catch (e) { 
+      console.warn('Failed to fetch cart save:', e);
+    }
   };
   useEffect(() => { persist(); }, [items]);
 

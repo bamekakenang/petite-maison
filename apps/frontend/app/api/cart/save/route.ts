@@ -17,30 +17,46 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const items = Array.isArray((body as any)?.items) ? (body as any).items : [];
 
-    // We avoid any server-side DB dependency here.
-    // In production auth uses JWT cookies, not a Prisma Session table.
-    const user = safeParseJson<{ id?: number }>(cookies().get('user')?.value);
-    const scope = user?.id ? 'user' : 'guest';
+    // Try to get cookies, but don't fail if unavailable
+    let scope = 'guest';
+    try {
+      const cookieStore = await cookies();
+      const userCookie = cookieStore.get('user');
+      if (userCookie?.value) {
+        const user = safeParseJson<{ id?: number }>(userCookie.value);
+        if (user?.id) scope = 'user';
+      }
+    } catch (e) {
+      // cookies() might throw in some runtimes - just use guest scope
+      console.debug('Cookie read skipped (guest scope):', e instanceof Error ? e.message : 'unknown');
+    }
 
     const res = NextResponse.json(
       { ok: true, scope },
       { headers: { 'Cache-Control': 'no-store' } }
     );
 
-    const isProd = process.env.NODE_ENV === 'production';
-    res.cookies.set('guest_cart', JSON.stringify(items), {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-      httpOnly: true,
-      secure: isProd,
-      sameSite: 'lax',
-    });
+    // Always try to set the cart cookie
+    try {
+      const isProd = process.env.NODE_ENV === 'production';
+      res.cookies.set('guest_cart', JSON.stringify(items), {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+        httpOnly: true,
+        secure: isProd,
+        sameSite: 'lax',
+      });
+    } catch (e) {
+      console.debug('Cookie write skipped:', e instanceof Error ? e.message : 'unknown');
+    }
 
     return res;
-  } catch {
+  } catch (error) {
+    console.error('Cart save error:', error);
+    // Return 200 anyway - cart save is non-critical
     return NextResponse.json(
-      { error: 'cart_save_failed' },
-      { status: 500, headers: { 'Cache-Control': 'no-store' } }
+      { ok: true, error: 'cart_save_partial', scope: 'guest' },
+      { headers: { 'Cache-Control': 'no-store' } }
     );
   }
 }

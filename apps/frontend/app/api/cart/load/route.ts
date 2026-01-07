@@ -15,12 +15,14 @@ function safeParseItems(value: string | undefined): any[] {
 
 export async function GET() {
   try {
-    const guest = cookies().get('guest_cart')?.value;
+    const cookieStore = await cookies();
+    const guest = cookieStore.get('guest_cart')?.value;
     return NextResponse.json(
       { items: safeParseItems(guest) },
       { headers: { 'Cache-Control': 'no-store' } }
     );
-  } catch {
+  } catch (e) {
+    console.debug('Cart load failed:', e instanceof Error ? e.message : 'unknown');
     return NextResponse.json(
       { items: [] },
       { headers: { 'Cache-Control': 'no-store' } }

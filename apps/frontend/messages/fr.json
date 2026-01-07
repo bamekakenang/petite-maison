@@ -32,7 +32,8 @@
       "sortByName": "Trier par nom",
       "sortByPriceAsc": "Prix croissant",
       "sortByPriceDesc": "Prix décroissant",
-      "sortByNewest": "Nouveautés"
+      "sortByNewest": "Nouveautés",
+      "noProducts": "Aucun produit trouvé. Essayez une autre recherche."
     },
     "contact": {
       "title": "Contact",
