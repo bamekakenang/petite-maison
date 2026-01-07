@@ -1,16 +1,16 @@
-import { prisma } from '../../../../lib/prisma';
 import { getTranslations } from 'next-intl/server';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { AddToCartButton } from '../../../../components/AddToCartButton';
 import Script from 'next/script';
+import { findProductBySlug } from '../../../../data/products';
 
 export default async function ProductDetail({ params:{ slug } }:{ params:{ slug:string } }) {
   const t = await getTranslations();
-  const product = await prisma.product.findUnique({ where: { slug } });
+  const product = findProductBySlug(slug);
   if (!product) return notFound();
 
-  const price = product.priceCents / 100;
+  const price = product.price;
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">

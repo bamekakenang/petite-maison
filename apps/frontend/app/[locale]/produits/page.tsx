@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { ProductCard } from '../../../components/ProductCard';
-import { prisma } from '../../../lib/prisma';
+import { products } from '../../../data/products';
 
 const categories = [
   { id: 'all', nameKey: 'category.all' },
@@ -15,10 +15,9 @@ export default async function ProduitsPage({ searchParams }: { searchParams?: { 
   const q = (searchParams?.q || '').trim();
   const qLower = q.toLowerCase();
 
-  // Fetch all products (small catalog) then filter on translated names + sku/slug/category
-  const allProducts = await prisma.product.findMany({
-    orderBy: { id: 'asc' },
-  });
+  // NOTE: We intentionally avoid Prisma here.
+  // In production the frontend may not have DATABASE_URL configured.
+  const allProducts = products.slice().sort((a, b) => a.id - b.id);
 
   const items = q
     ? allProducts.filter((p) => {
@@ -87,12 +86,12 @@ export default async function ProduitsPage({ searchParams }: { searchParams?: { 
 
       {/* Grille de produits */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {items.map((product: { id: number; sku: string; nameKey: string; priceCents: number; image: string }) => (
+        {items.map((product) => (
           <ProductCard
             key={product.id}
             sku={product.sku}
             title={t(product.nameKey)}
-            price={product.priceCents / 100}
+            price={product.price}
             image={product.image}
           />
         ))}

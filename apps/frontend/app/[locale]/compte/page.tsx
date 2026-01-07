@@ -4,13 +4,21 @@ import Link from 'next/link';
 
 export default async function AccountPage({ params:{locale} }:{ params:{locale:string} }) {
   const user = await currentUser();
-  const orders: { id: number; createdAt: Date; status: string; totalCents: number }[] =
-    user
-      ? await (await import('../../../lib/prisma')).prisma.order.findMany({
-          where: { userId: user.id },
-          orderBy: { createdAt: 'desc' },
-        })
-      : [];
+
+  let orders: { id: number; createdAt: Date; status: string; totalCents: number }[] = [];
+  if (user) {
+    try {
+      const { prisma } = await import('../../../lib/prisma');
+      orders = await prisma.order.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: 'desc' },
+      });
+    } catch {
+      // In production the frontend DB may be disabled/unconfigured.
+      orders = [];
+    }
+  }
+
   return (
     <main className="mx-auto max-w-3xl px-4 py-8 space-y-6">
       {!user ? (

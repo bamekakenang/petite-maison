@@ -18,8 +18,10 @@ export function ProductCard({ sku, title, price, image }: { sku: string; title: 
 
   return (
     <article className="group border rounded-2xl p-3 bg-white hover:shadow-md transition" aria-labelledby={`${sku}-title`}>
-      <Link href={`./produits/${sku.toLowerCase()}`}
-        className="relative aspect-[3/4] mb-2 bg-neutral-900 rounded-xl overflow-hidden vhs-grain blood-drip glitch-hover block">
+      <Link
+        href={`/${locale}/produits/${sku.toLowerCase()}`}
+        className="relative aspect-[3/4] mb-2 bg-neutral-900 rounded-xl overflow-hidden vhs-grain blood-drip glitch-hover block"
+      >
         <Image
           alt={`Image de ${title}`}
           src={src}
