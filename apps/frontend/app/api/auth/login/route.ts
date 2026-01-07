@@ -5,28 +5,59 @@ const BACKEND_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   'http://localhost:3000/api/v1';
 
+function safeErrorMessage(raw: string | null, parsed: any): string {
+  if (parsed && typeof parsed === 'object') {
+    if (typeof parsed.error === 'string' && parsed.error) return parsed.error;
+    if (typeof parsed.message === 'string' && parsed.message) return parsed.message;
+  }
+
+  if (!raw) return 'backend_error';
+  const trimmed = raw.trim();
+  if (trimmed.startsWith('<')) return 'backend_unavailable';
+  return trimmed.slice(0, 500);
+}
+
 export async function POST(req: Request) {
   try {
     const { email, password, remember } = await req.json();
-    
+
     if (!email || !password) {
       return NextResponse.json({ error: 'missing_fields' }, { status: 400 });
     }
 
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+
+    // Preserve original client IP so backend rate-limit works per user (not per App Service IP)
+    const xff = req.headers.get('x-forwarded-for');
+    if (xff) headers['x-forwarded-for'] = xff;
+
     // Forward to backend API
     const backendResponse = await fetch(`${BACKEND_URL}/auth/login`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await backendResponse.json();
+    const raw = await backendResponse.text();
+    let data: any = null;
+    try {
+      data = raw ? JSON.parse(raw) : null;
+    } catch {
+      data = null;
+    }
 
     if (!backendResponse.ok) {
       return NextResponse.json(
-        { error: data.error || 'invalid_credentials' },
+        { error: safeErrorMessage(raw, data) || 'invalid_credentials' },
         { status: backendResponse.status }
       );
+    }
+
+    if (!data || typeof data !== 'object') {
+      return NextResponse.json({ error: 'login_failed' }, { status: 502 });
     }
 
     // Store tokens in httpOnly cookies for security

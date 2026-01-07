@@ -8,8 +8,13 @@ const router = Router();
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: 'Too many authentication attempts',
+  max: parseInt(process.env.AUTH_RATE_LIMIT_MAX_REQUESTS || '50'),
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  handler: (_req, res) => {
+    res.status(429).json({ success: false, error: 'Too many authentication attempts' });
+  },
 });
 
 router.post(

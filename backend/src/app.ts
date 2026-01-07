@@ -8,6 +8,9 @@ import { metricsMiddleware } from './middlewares/metrics.middleware';
 
 const app: Application = express();
 
+// Trust reverse proxy (Azure App Service) so req.ip / rate limiting works per client
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet());
 

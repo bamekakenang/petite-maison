@@ -54,6 +54,7 @@ tmp/
 *.publishsettings.new
 backend.zip
 frontend.zip
+frontend-src.zip
 
 # OS
 Thumbs.db
