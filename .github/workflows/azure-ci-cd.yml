@@ -73,6 +73,13 @@ jobs:
           cp -R apps/frontend/.next/static frontend-deploy/.next/static
           cp -R apps/frontend/public frontend-deploy/public
 
+          # i18n message files (not auto-copied by Next.js standalone)
+          cp -R apps/frontend/messages frontend-deploy/messages
+          cp -R apps/frontend/data frontend-deploy/data
+          cp -R apps/frontend/components frontend-deploy/components
+          cp -R apps/frontend/lib frontend-deploy/lib
+          cp apps/frontend/i18n.ts frontend-deploy/i18n.ts
+
           cd frontend-deploy
           zip -r ../frontend.zip .
       - name: Deploy to Azure WebApp (frontend)
