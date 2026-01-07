@@ -44,38 +44,62 @@ async function Header({locale}:{locale:string}){
   
   return (
     <>
-      <a href="#content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-black text-white px-3 py-1 rounded">
+      <a href="#content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-black text-white px-3 py-1 rounded z-50">
         Aller au contenu
       </a>
-      <header className="border-b border-white/10 bg-black/40 backdrop-blur">
-        <div className="mx-auto max-w-6xl px-4 py-3 flex items-center gap-4">
-          <Link href={`/${locale}`} className="flex items-center gap-3 mr-auto">
-            <Logo size={28} />
-            <span className="text-lg font-semibold">La Petite Maison</span>
-          </Link>
-          <form role="search" className="hidden md:block" action={`/${locale}/produits`} method="get">
-            <label className="sr-only" htmlFor="q">{t('search.placeholder')}</label>
-            <input id="q" name="q" placeholder={t('search.placeholder')} className="w-72 border rounded-xl px-3 py-2"/>
-          </form>
-          <nav className="flex items-center gap-3">
-            <Link href={`/${locale}`} className="px-3 py-2 rounded-xl border border-white/20 text-white hover:bg-white/10">{t('nav.home')}</Link>
-            <Link href={`/${locale}/produits`} className="px-3 py-2 rounded-xl border border-white/20 text-white hover:bg-white/10">{t('nav.shop')}</Link>
-            <Link href={`/${locale}/fanzine`} className="px-3 py-2 rounded-xl border border-white/20 text-white hover:bg-white/10">{t('nav.zine')}</Link>
-            <Link href={`/${locale}/contact`} className="px-3 py-2 rounded-xl border border-white/20 text-white hover:bg-white/10">{t('nav.contact')}</Link>
-            {user ? (
-              <UserMenu 
-                locale={locale}
-                displayName={displayName}
-                accountLabel={t('account')}
-                ordersLabel={t('nav.orders')}
-                unsubscribeLabel={t('nav.unsubscribe')}
-              />
-            ) : (
-              <Link href={`/${locale}/connexion`} className="px-3 py-2 rounded-xl border border-white/20 text-white hover:bg-white/10">{t('nav.login')}</Link>
-            )}
-            <MiniCartToggle />
-            <LocaleSwitcher/>
+      <header className="border-b border-white/10 bg-black/40 backdrop-blur sticky top-0 z-40">
+        <div className="mx-auto max-w-6xl px-4 py-3">
+          {/* Logo + Search Bar (Desktop) */}
+          <div className="flex items-center gap-4 mb-3 lg:mb-0">
+            <Link href={`/${locale}`} className="flex items-center gap-2 lg:gap-3">
+              <Logo size={24} />
+              <span className="text-base lg:text-lg font-semibold whitespace-nowrap">La Petite Maison</span>
+            </Link>
+            <form role="search" className="hidden lg:block flex-1 max-w-md ml-auto" action={`/${locale}/produits`} method="get">
+              <label className="sr-only" htmlFor="q">{t('search.placeholder')}</label>
+              <input id="q" name="q" placeholder={t('search.placeholder')} className="w-full border rounded-xl px-3 py-2 text-sm"/>
+            </form>
+          </div>
+          
+          {/* Navigation */}
+          <nav className="flex items-center gap-2 lg:gap-3 flex-wrap">
+            {/* Desktop Links */}
+            <div className="hidden lg:flex gap-3">
+              <Link href={`/${locale}`} className="px-3 py-2 rounded-xl border border-white/20 text-white hover:bg-white/10 text-sm">{t('nav.home')}</Link>
+              <Link href={`/${locale}/produits`} className="px-3 py-2 rounded-xl border border-white/20 text-white hover:bg-white/10 text-sm">{t('nav.shop')}</Link>
+              <Link href={`/${locale}/fanzine`} className="px-3 py-2 rounded-xl border border-white/20 text-white hover:bg-white/10 text-sm">{t('nav.zine')}</Link>
+              <Link href={`/${locale}/contact`} className="px-3 py-2 rounded-xl border border-white/20 text-white hover:bg-white/10 text-sm">{t('nav.contact')}</Link>
+            </div>
+            
+            {/* Mobile Links (Abbreviated) */}
+            <div className="lg:hidden flex gap-2">
+              <Link href={`/${locale}/produits`} className="px-2 py-2 rounded-xl border border-white/20 text-white hover:bg-white/10 text-xs font-semibold" title={t('nav.shop')}>🛍️</Link>
+              <Link href={`/${locale}/contact`} className="px-2 py-2 rounded-xl border border-white/20 text-white hover:bg-white/10 text-xs" title={t('nav.contact')}>✉️</Link>
+            </div>
+            
+            {/* Right Side Actions */}
+            <div className="flex items-center gap-2 ml-auto lg:ml-0">
+              {user ? (
+                <UserMenu 
+                  locale={locale}
+                  displayName={displayName}
+                  accountLabel={t('account')}
+                  ordersLabel={t('nav.orders')}
+                  unsubscribeLabel={t('nav.unsubscribe')}
+                />
+              ) : (
+                <Link href={`/${locale}/connexion`} className="px-2 lg:px-3 py-2 rounded-xl border border-white/20 text-white hover:bg-white/10 text-xs lg:text-sm">{t('nav.login')}</Link>
+              )}
+              <MiniCartToggle />
+              <LocaleSwitcher/>
+            </div>
           </nav>
+          
+          {/* Mobile Search */}
+          <form role="search" className="lg:hidden mt-3" action={`/${locale}/produits`} method="get">
+            <label className="sr-only" htmlFor="q-mobile">{t('search.placeholder')}</label>
+            <input id="q-mobile" name="q" placeholder={t('search.placeholder')} className="w-full border rounded-xl px-3 py-2 text-sm"/>
+          </form>
         </div>
       </header>
     </>
