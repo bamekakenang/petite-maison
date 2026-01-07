@@ -19,7 +19,13 @@ export const metadata = {
 
 async function Header({locale}:{locale:string}){
   const t = await getTranslations();
-  const user = await currentUser();
+  let user: Awaited<ReturnType<typeof currentUser>> = null;
+  try {
+    user = await currentUser();
+  } catch (error) {
+    // In production/Azure, cookies() might fail during initial render
+    console.error('Failed to get current user:', error);
+  }
   const displayName =
     user?.name ||
     [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() ||
