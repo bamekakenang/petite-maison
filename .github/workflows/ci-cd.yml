@@ -284,9 +284,10 @@ jobs:
     name: ZAP Baseline
     runs-on: ubuntu-latest
     needs: [build-backend, build-frontend]
-    if: ${{ env.ZAP_TARGET_URL != '' }}
     steps:
-      - uses: zaproxy/action-baseline@v0.10.0
+      - name: Run ZAP Baseline (optional)
+        if: ${{ env.ZAP_TARGET_URL != '' }}
+        uses: zaproxy/action-baseline@v0.10.0
         with:
           target: ${{ env.ZAP_TARGET_URL }}
           cmd_options: "-I"
