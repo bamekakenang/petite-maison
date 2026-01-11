@@ -20,18 +20,25 @@ async function fetchProducts(q?: string, category?: string) {
 
     const url = `${API_URL}/products${params.toString() ? `?${params.toString()}` : ''}`;
     console.log('[produits] Fetching from API:', url);
-    
+
     const response = await fetch(url, {
       cache: 'no-store',
       headers: { 'Content-Type': 'application/json' }
     });
 
     if (response.ok) {
-      const data = await response.json();
-      console.log('[produits] API returned', (data.data || []).length, 'products');
-      return (data.data || []).sort((a: any, b: any) => a.id - b.id);
+      const json = await response.json().catch(() => null);
+
+      // Backend shape: { success: true, data: { products: [...], pagination: ... } }
+      // Older/alternate shapes: { success: true, data: [...] }
+      const data = (json as any)?.data;
+      const items: any[] =
+        Array.isArray(data) ? data : Array.isArray(data?.products) ? data.products : [];
+
+      console.log('[produits] API returned', items.length, 'products');
+      return items.sort((a: any, b: any) => (a.id ?? 0) - (b.id ?? 0));
     }
-    
+
     console.warn('[produits] API returned non-OK:', response.status);
     return null;
   } catch (error) {

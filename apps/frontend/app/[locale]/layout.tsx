@@ -86,6 +86,8 @@ async function Header({locale}:{locale:string}){
                   accountLabel={t('account')}
                   ordersLabel={t('nav.orders')}
                   unsubscribeLabel={t('nav.unsubscribe')}
+                  addProductLabel={t('nav.addProduct')}
+                  canManageProducts={!!user}
                 />
               ) : (
                 <Link href={`/${locale}/connexion`} className="px-2 lg:px-3 py-2 rounded-xl border border-white/20 text-white hover:bg-white/10 text-xs lg:text-sm">{t('nav.login')}</Link>

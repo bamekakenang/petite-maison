@@ -6,7 +6,8 @@
     "contact": "Contact",
     "login": "Sign in",
     "orders": "My orders",
-    "unsubscribe": "Unsubscribe from zine"
+    "unsubscribe": "Unsubscribe from zine",
+    "addProduct": "Add product"
   },
   "cta": {
     "explore": "Explore the shop",

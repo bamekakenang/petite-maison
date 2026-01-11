@@ -14,7 +14,8 @@ router.get('/:id', productController.getProductById);
 router.post(
   '/',
   authenticate,
-  authorize('ADMIN', 'MANAGER'),
+  // Marketplace mode: allow any authenticated user to add products
+  authorize('ADMIN', 'MANAGER', 'CUSTOMER'),
   validate([
     body('sku').notEmpty().trim(),
     body('name').notEmpty().trim(),

@@ -6,7 +6,8 @@
     "contact": "Contact",
     "login": "Connexion",
     "orders": "Mes commandes",
-    "unsubscribe": "Se désabonner du fanzine"
+    "unsubscribe": "Se désabonner du fanzine",
+    "addProduct": "Ajouter un produit"
   },
   "cta": {
     "explore": "Découvrir la boutique",

@@ -10,9 +10,20 @@ type Props = {
   ordersLabel?: string;
   unsubscribeLabel?: string;
   logoutLabel?: string;
+  addProductLabel?: string;
+  canManageProducts?: boolean;
 };
 
-export function UserMenu({ locale, displayName, accountLabel, ordersLabel = 'Mes commandes', unsubscribeLabel = 'Se désabonner du fanzine', logoutLabel = 'Se déconnecter' }: Props) {
+export function UserMenu({
+  locale,
+  displayName,
+  accountLabel,
+  ordersLabel = 'Mes commandes',
+  unsubscribeLabel = 'Se désabonner du fanzine',
+  logoutLabel = 'Se déconnecter',
+  addProductLabel = 'Ajouter un produit',
+  canManageProducts = false,
+}: Props) {
   const [open, setOpen] = useState(false);
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -88,6 +99,18 @@ export function UserMenu({ locale, displayName, accountLabel, ordersLabel = 'Mes
           >
             {ordersLabel}
           </Link>
+
+          {canManageProducts && (
+            <Link
+              href={`/${locale}/compte/vendre`}
+              role="menuitem"
+              className="block w-full text-left px-3 py-2 rounded-lg text-sm text-white hover:bg-white/10 focus:bg-white/10 focus:outline-none"
+              onClick={() => setOpen(false)}
+            >
+              {addProductLabel}
+            </Link>
+          )}
+
           <button
             role="menuitem"
             className="block w-full text-left px-3 py-2 rounded-lg text-sm text-amber-200 hover:bg-white/10 focus:bg-white/10 focus:outline-none"

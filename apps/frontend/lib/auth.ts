@@ -4,7 +4,8 @@ import { cookies } from 'next/headers';
 // after login/register. We read and parse it; if absent we consider the user not logged in.
 export async function currentUser() {
   try {
-    const raw = cookies().get('user')?.value;
+    const cookieStore = await cookies();
+    const raw = cookieStore.get('user')?.value;
     if (!raw) return null;
     const user = JSON.parse(raw);
     return user;
