@@ -9,6 +9,9 @@ module.exports = withNextIntl({
   eslint: { ignoreDuringBuilds: true },
 
   images: {
+    // Azure App Service standalone deployments may not include `sharp`.
+    // Disable optimization to avoid runtime crashes on `/_next/image`.
+    unoptimized: true,
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com', pathname: '/**' },
       { protocol: 'https', hostname: 'picsum.photos', pathname: '/**' },
