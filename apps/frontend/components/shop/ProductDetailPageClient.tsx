@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { AddToCartButton } from '../AddToCartButton';
 import { currencyForLocale } from '../../lib/currency';
+import { resolveProductImageUrl } from '../../lib/urls';
 import { findProductBySlug } from '../../data/products';
 
 type UiProduct = {
@@ -158,7 +159,7 @@ export function ProductDetailPageClient({
     );
   }
 
-  const imageSrc = item.imageUrl || '/products/house.svg';
+  const imageSrc = resolveProductImageUrl(item.imageUrl) || '/products/house.svg';
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">

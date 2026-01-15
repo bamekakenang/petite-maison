@@ -11,6 +11,9 @@ logs/
 *.log
 npm-debug.log*
 
+# Uploads
+uploads/
+
 # Database
 *.db
 *.db-journal

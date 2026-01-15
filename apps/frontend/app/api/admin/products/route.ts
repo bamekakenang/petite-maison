@@ -34,17 +34,84 @@ type CreateProductPayload = {
 
 export async function POST(req: Request) {
   try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('auth_token')?.value;
+    if (!token) {
+      return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+    }
+
+    const contentType = req.headers.get('content-type') || '';
+    const isMultipart = contentType.includes('multipart/form-data');
+
+    // Preserve original client IP so backend rate-limit works per user (not per App Service IP)
+    const xff = req.headers.get('x-forwarded-for');
+
+    if (isMultipart) {
+      const incoming = await req.formData();
+
+      // Basic validation (backend also validates)
+      const sku = String(incoming.get('sku') || '').trim();
+      const name = String(incoming.get('name') || '').trim();
+      const price = String(incoming.get('price') || '').trim();
+      const stock = String(incoming.get('stock') || '').trim();
+      const category = String(incoming.get('category') || '').trim();
+
+      if (!sku || !name || !price || !stock || !category) {
+        return NextResponse.json({ error: 'missing_fields' }, { status: 400 });
+      }
+
+      // Rebuild a new FormData to forward to the backend.
+      // (Request body is already consumed by formData())
+      const outgoing = new FormData();
+      for (const [key, value] of incoming.entries()) {
+        if (typeof value === 'string') {
+          outgoing.append(key, value);
+        } else {
+          // value is a File (Blob)
+          outgoing.append(key, value, (value as File).name);
+        }
+      }
+
+      const headers: Record<string, string> = {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+      if (xff) headers['x-forwarded-for'] = xff;
+
+      const backendResponse = await fetch(`${BACKEND_URL}/products`, {
+        method: 'POST',
+        headers,
+        body: outgoing,
+      });
+
+      const raw = await backendResponse.text();
+      let data: any = null;
+      try {
+        data = raw ? JSON.parse(raw) : null;
+      } catch {
+        data = null;
+      }
+
+      if (!backendResponse.ok) {
+        return NextResponse.json(
+          { error: safeErrorMessage(raw, data) || 'create_product_failed' },
+          { status: backendResponse.status }
+        );
+      }
+
+      // Preserve the backend shape { success, data }
+      if (!data || typeof data !== 'object') {
+        return NextResponse.json({ error: 'create_product_failed' }, { status: 502 });
+      }
+
+      return NextResponse.json(data, { status: backendResponse.status });
+    }
+
     const body = (await req.json().catch(() => ({}))) as Partial<CreateProductPayload>;
 
     // Basic validation (backend also validates)
     if (!body.sku || !body.name || body.price === undefined || body.stock === undefined || !body.category) {
       return NextResponse.json({ error: 'missing_fields' }, { status: 400 });
-    }
-
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token')?.value;
-    if (!token) {
-      return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
     }
 
     const payload: CreateProductPayload = {
@@ -64,8 +131,6 @@ export async function POST(req: Request) {
       Authorization: `Bearer ${token}`,
     };
 
-    // Preserve original client IP so backend rate-limit works per user (not per App Service IP)
-    const xff = req.headers.get('x-forwarded-for');
     if (xff) headers['x-forwarded-for'] = xff;
 
     const backendResponse = await fetch(`${BACKEND_URL}/products`, {

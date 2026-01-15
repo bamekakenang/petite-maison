@@ -3,6 +3,7 @@ import { body } from 'express-validator';
 import * as productController from '../controllers/product.controller';
 import { authenticate, authorize } from '../middlewares/auth.middleware';
 import { validate } from '../middlewares/validate.middleware';
+import { maybeUploadProductImage } from '../middlewares/upload.middleware';
 
 const router = Router();
 
@@ -16,6 +17,8 @@ router.post(
   authenticate,
   // Marketplace mode: allow any authenticated user to add products
   authorize('ADMIN', 'MANAGER', 'CUSTOMER'),
+  // Support multipart/form-data for image upload (no-op for JSON)
+  maybeUploadProductImage,
   validate([
     body('sku').notEmpty().trim(),
     body('name').notEmpty().trim(),

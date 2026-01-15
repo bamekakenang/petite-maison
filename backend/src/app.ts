@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import routes from './routes';
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware';
 import { metricsMiddleware } from './middlewares/metrics.middleware';
+import { ensureUploadDirs, UPLOADS_ROOT_DIR } from './config/uploads';
 
 const app: Application = express();
 
@@ -12,7 +13,12 @@ const app: Application = express();
 app.set('trust proxy', 1);
 
 // Security middleware
-app.use(helmet());
+// Allow the frontend (different origin) to load images from /uploads
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  })
+);
 
 // CORS
 const corsOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3001').split(',');
@@ -32,6 +38,10 @@ app.use(limiter);
 // Body parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Static files (uploaded images)
+ensureUploadDirs();
+app.use('/uploads', express.static(UPLOADS_ROOT_DIR));
 
 // Metrics
 app.use(metricsMiddleware);

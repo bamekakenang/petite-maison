@@ -1,6 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
 import productService from '../services/product.service';
 import { CreateProductDto, UpdateProductDto, ProductFilters, PaginationParams } from '../types';
+import { productImagePublicUrl } from '../config/uploads';
+import { ValidationError } from '../utils/errors';
+
+function toNumber(value: unknown, field: string): number {
+  const n = typeof value === 'number' ? value : Number(value);
+  if (Number.isNaN(n)) {
+    throw new ValidationError(`${field} must be a number`);
+  }
+  return n;
+}
 
 export const getProducts = async (
   req: Request,
@@ -58,7 +68,25 @@ export const createProduct = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const data: CreateProductDto = req.body;
+    const body = req.body || {};
+
+    // Multer (multipart/form-data) provides fields as strings.
+    // Normalize types before passing to Prisma.
+    const data: CreateProductDto = {
+      sku: String(body.sku || '').trim(),
+      name: String(body.name || '').trim(),
+      description: body.description ? String(body.description) : undefined,
+      price: toNumber(body.price, 'price'),
+      stock: toNumber(body.stock, 'stock'),
+      category: String(body.category || '').trim(),
+      imageUrl: body.imageUrl ? String(body.imageUrl) : undefined,
+      minStock: body.minStock === undefined || body.minStock === '' ? undefined : toNumber(body.minStock, 'minStock'),
+    };
+
+    if (req.file?.filename) {
+      data.imageUrl = productImagePublicUrl(req.file.filename);
+    }
+
     const product = await productService.create(data);
 
     res.status(201).json({

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 
 type Props = {
@@ -8,6 +8,8 @@ type Props = {
 };
 
 export function AddProductPageClient({ locale }: Props) {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const [sku, setSku] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -15,6 +17,7 @@ export function AddProductPageClient({ locale }: Props) {
   const [stock, setStock] = useState<string>('');
   const [category, setCategory] = useState('figurines');
   const [imageUrl, setImageUrl] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [minStock, setMinStock] = useState<string>('');
 
   const [loading, setLoading] = useState(false);
@@ -28,21 +31,22 @@ export function AddProductPageClient({ locale }: Props) {
 
     setLoading(true);
     try {
-      const payload: any = {
-        sku: sku.trim(),
-        name: name.trim(),
-        price: Number(price),
-        stock: Number(stock),
-        category: category.trim(),
-      };
-      if (description.trim()) payload.description = description.trim();
-      if (imageUrl.trim()) payload.imageUrl = imageUrl.trim();
-      if (minStock.trim()) payload.minStock = Number(minStock);
+      const form = new FormData();
+      form.set('sku', sku.trim());
+      form.set('name', name.trim());
+      form.set('price', String(price));
+      form.set('stock', String(stock));
+      form.set('category', category.trim());
+      if (description.trim()) form.set('description', description.trim());
+      if (minStock.trim()) form.set('minStock', minStock.trim());
+
+      // Prefer uploaded file over URL if both are provided
+      if (imageFile) form.set('image', imageFile);
+      else if (imageUrl.trim()) form.set('imageUrl', imageUrl.trim());
 
       const res = await fetch('/api/admin/products', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: form,
       });
 
       const data = await res.json().catch(() => ({}));
@@ -61,6 +65,8 @@ export function AddProductPageClient({ locale }: Props) {
       setPrice('');
       setStock('');
       setImageUrl('');
+      setImageFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
       setMinStock('');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'create_product_failed');
@@ -166,7 +172,21 @@ export function AddProductPageClient({ locale }: Props) {
         </div>
 
         <div>
-          <label className="block text-sm mb-1">Image URL</label>
+          <label className="block text-sm mb-1">Image (upload depuis votre PC)</label>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+            className="w-full border border-neutral-300 bg-white text-neutral-900 rounded-xl px-3 py-2"
+          />
+          <p className="text-xs text-neutral-600 mt-1">
+            Optionnel. Formats acceptés: JPG/PNG/WEBP/GIF.
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm mb-1">Image URL (alternative)</label>
           <input
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
