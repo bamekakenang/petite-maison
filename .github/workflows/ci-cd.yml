@@ -333,7 +333,7 @@ jobs:
 
       - name: Skip load tests (no target)
         if: ${{ env.LOAD_TEST_TARGET_URL == '' }}
-        run: echo "Skipping load tests: LOAD_TEST_TARGET_URL is not set."
+        run: 'echo "Skipping load tests: LOAD_TEST_TARGET_URL is not set."'
 
       - name: Run load tests (optional)
         if: ${{ env.LOAD_TEST_TARGET_URL != '' }}
