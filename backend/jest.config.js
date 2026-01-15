@@ -17,6 +17,7 @@ module.exports = {
       statements: 0
     }
   },
-  coverageReporters: ['text', 'lcov', 'html'],
+  // Include json-summary so CI can read coverage/coverage-summary.json
+  coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
   setupFilesAfterEnv: ['<rootDir>/src/tests/setup.ts']
 };
