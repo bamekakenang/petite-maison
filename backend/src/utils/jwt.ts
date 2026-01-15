@@ -1,4 +1,5 @@
 import jwt, { SignOptions, Secret } from 'jsonwebtoken';
+import { randomUUID } from 'crypto';
 import { TokenPayload, AuthTokens } from '../types';
 import logger from '../config/logger';
 
@@ -8,12 +9,15 @@ const JWT_EXPIRES_IN = (process.env.JWT_EXPIRES_IN || '15m') as SignOptions['exp
 const JWT_REFRESH_EXPIRES_IN = (process.env.JWT_REFRESH_EXPIRES_IN || '7d') as SignOptions['expiresIn'];
 
 export const generateTokens = (payload: TokenPayload): AuthTokens => {
+  // Add a unique JWT ID so tokens created within the same second do not collide
   const accessToken = jwt.sign(payload as jwt.JwtPayload, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN,
+    jwtid: randomUUID(),
   } as SignOptions);
 
   const refreshToken = jwt.sign(payload as jwt.JwtPayload, JWT_REFRESH_SECRET, {
     expiresIn: JWT_REFRESH_EXPIRES_IN,
+    jwtid: randomUUID(),
   } as SignOptions);
 
   return { accessToken, refreshToken };

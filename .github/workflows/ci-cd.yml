@@ -7,6 +7,7 @@ on:
     branches: [ main, develop ]
 env:
   ZAP_TARGET_URL: ${{ secrets.ZAP_TARGET_URL || '' }}
+  LOAD_TEST_TARGET_URL: ${{ secrets.LOAD_TEST_TARGET_URL || '' }}
 
 jobs:
   lint-backend:
@@ -109,11 +110,7 @@ jobs:
       - name: Check coverage threshold
         working-directory: ./backend
         run: |
-          COVERAGE=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
-          if (( $(echo "$COVERAGE < 70" | bc -l) )); then
-            echo "Coverage is below 70%: $COVERAGE%"
-            exit 1
-          fi
+          node -e "const c=require('./coverage/coverage-summary.json')?.total?.lines?.pct; if (typeof c !== 'number') { console.error('Unable to read coverage'); process.exit(1); } if (c < 70) { console.error('Coverage is below 70%: ' + c + '%'); process.exit(1); } console.log('Coverage OK: ' + c + '%');"
 
   security-backend:
     name: Backend Security Scan
@@ -325,5 +322,19 @@ jobs:
       - name: Install Artillery
         run: npm install -g artillery
 
-      - name: Run load tests
-        run: artillery run load-test.yml
+      - name: Normalize load test target URL
+        if: ${{ env.LOAD_TEST_TARGET_URL != '' }}
+        run: |
+          TARGET="${LOAD_TEST_TARGET_URL}"
+          if [[ "${TARGET}" != http* ]]; then
+            TARGET="https://${TARGET}"
+          fi
+          echo "LOAD_TEST_TARGET_URL=${TARGET}" >> "$GITHUB_ENV"
+
+      - name: Skip load tests (no target)
+        if: ${{ env.LOAD_TEST_TARGET_URL == '' }}
+        run: echo "Skipping load tests: LOAD_TEST_TARGET_URL is not set."
+
+      - name: Run load tests (optional)
+        if: ${{ env.LOAD_TEST_TARGET_URL != '' }}
+        run: artillery run -t "$LOAD_TEST_TARGET_URL" backend/load-test.yml

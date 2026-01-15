@@ -47,6 +47,8 @@ function extensionForMimeType(mimeType: string): string {
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
+    // Ensure the directory exists at write-time (tests may clean it between runs)
+    ensureUploadDirs();
     cb(null, PRODUCT_IMAGE_DIR);
   },
   filename: (_req, file, cb) => {

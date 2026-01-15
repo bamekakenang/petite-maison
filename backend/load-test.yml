@@ -10,7 +10,6 @@ config:
     - duration: 180
       arrivalRate: 50
       name: "Sustained load"
-  processor: "./load-test-processor.js"
   variables:
     adminEmail: "admin@petitemaison.fr"
     adminPassword: "password123"
@@ -25,7 +24,7 @@ scenarios:
       - get:
           url: "/api/v1/products?page=1&limit=10"
           capture:
-            - json: "$.data[0].id"
+            - json: "$.data.products[0].id"
               as: "productId"
       - get:
           url: "/api/v1/products/{{ productId }}"
@@ -64,7 +63,7 @@ scenarios:
       - get:
           url: "/api/v1/products?page=1&limit=1"
           capture:
-            - json: "$.data[0].id"
+            - json: "$.data.products[0].id"
               as: "productId"
       - post:
           url: "/api/v1/orders"
