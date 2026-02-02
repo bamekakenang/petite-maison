@@ -2,6 +2,20 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: petite-maison
+  annotations:
+    linkerd.io/inject: enabled
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: petite-maison-backend
+  namespace: petite-maison
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: petite-maison-frontend
+  namespace: petite-maison
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -47,6 +61,7 @@ spec:
       labels:
         app: petite-maison-backend
     spec:
+      serviceAccountName: petite-maison-backend
       volumes:
         - name: data
           emptyDir: {}
@@ -138,6 +153,7 @@ spec:
       labels:
         app: petite-maison-frontend
     spec:
+      serviceAccountName: petite-maison-frontend
       containers:
         - name: frontend
           image: petite-maison-frontend:local
