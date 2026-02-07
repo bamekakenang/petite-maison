@@ -64,12 +64,16 @@ jobs:
       - name: Package standalone build
         run: |
           rm -rf frontend-deploy
-          mkdir -p frontend-deploy/.next
+          mkdir -p frontend-deploy
 
           # Next.js standalone output (server + minimal node_modules)
-          cp -R apps/frontend/.next/standalone/* frontend-deploy/
+          # Use cp -a with explicit .next to include hidden directories
+          cp -R apps/frontend/.next/standalone/server.js frontend-deploy/
+          cp -R apps/frontend/.next/standalone/package.json frontend-deploy/
+          cp -R apps/frontend/.next/standalone/node_modules frontend-deploy/node_modules
+          cp -R apps/frontend/.next/standalone/.next frontend-deploy/.next
 
-          # Static assets (must be copied separately)
+          # Static assets (must be copied separately into standalone .next)
           cp -R apps/frontend/.next/static frontend-deploy/.next/static
           cp -R apps/frontend/public frontend-deploy/public
 
@@ -88,3 +92,4 @@ jobs:
           app-name: ${{ secrets.FRONTEND_APP_NAME }}
           publish-profile: ${{ secrets.FRONTEND_PUBLISH_PROFILE }}
           package: frontend.zip
+          clean: true
