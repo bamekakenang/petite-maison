@@ -11,12 +11,6 @@ module.exports = withNextIntl({
   images: {
     // Azure App Service standalone deployments may not include `sharp`.
     // Disable optimization to avoid runtime crashes on `/_next/image`.
-    unoptimized: true,
-    remotePatterns: [
-      { protocol: 'https', hostname: 'images.unsplash.com', pathname: '/**' },
-      { protocol: 'https', hostname: 'picsum.photos', pathname: '/**' },
-      { protocol: 'https', hostname: 'images.pexels.com', pathname: '/**' },
-      { protocol: 'https', hostname: 'cdn.pixabay.com', pathname: '/**' }
-    ]
+    unoptimized: true
   }
 });
