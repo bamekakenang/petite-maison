@@ -19,6 +19,11 @@ export function resolveProductImageUrl(imageUrl?: string): string | undefined {
   if (!trimmed) return undefined;
 
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    // picsum.photos placeholder images are unreliable (302 chains, 404s) → use fallback.
+    try {
+      const host = new URL(trimmed).hostname;
+      if (host === 'picsum.photos') return '/products/house.svg';
+    } catch { /* not a valid URL, fall through */ }
     return trimmed;
   }
 
