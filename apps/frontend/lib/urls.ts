@@ -22,10 +22,15 @@ export function resolveProductImageUrl(imageUrl?: string): string | undefined {
     return trimmed;
   }
 
-  // Only prefix paths that are expected to be served by the backend.
-  if (trimmed.startsWith('/uploads/') || trimmed.startsWith('/images/')) {
+  // Backend /uploads/ paths → prefix with backend origin.
+  if (trimmed.startsWith('/uploads/')) {
     const origin = backendOriginFromApiUrl();
     if (origin) return `${origin}${trimmed}`;
+  }
+
+  // Legacy /images/ paths from seed data don't exist anywhere → use fallback.
+  if (trimmed.startsWith('/images/')) {
+    return '/products/house.svg';
   }
 
   return trimmed;

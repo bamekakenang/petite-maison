@@ -44,7 +44,7 @@ async function main(): Promise<void> {
       price: 89.99,
       stock: 50,
       category: 'Éclairage',
-      imageUrl: '/images/lamp-001.jpg',
+      imageUrl: '/products/candle.svg',
       minStock: 10,
     },
     {
@@ -54,7 +54,7 @@ async function main(): Promise<void> {
       price: 149.99,
       stock: 30,
       category: 'Mobilier',
-      imageUrl: '/images/chair-001.jpg',
+      imageUrl: '/products/house.svg',
       minStock: 5,
     },
     {
@@ -64,7 +64,7 @@ async function main(): Promise<void> {
       price: 299.99,
       stock: 15,
       category: 'Mobilier',
-      imageUrl: '/images/table-001.jpg',
+      imageUrl: '/products/skull.svg',
       minStock: 3,
     },
     {
@@ -74,7 +74,7 @@ async function main(): Promise<void> {
       price: 45.50,
       stock: 100,
       category: 'Décoration',
-      imageUrl: '/images/vase-001.jpg',
+      imageUrl: '/products/bat.svg',
       minStock: 20,
     },
     {
@@ -84,7 +84,7 @@ async function main(): Promise<void> {
       price: 29.99,
       stock: 75,
       category: 'Décoration',
-      imageUrl: '/images/cushion-001.jpg',
+      imageUrl: '/products/eye.svg',
       minStock: 15,
     },
     {
@@ -94,7 +94,7 @@ async function main(): Promise<void> {
       price: 129.99,
       stock: 25,
       category: 'Décoration',
-      imageUrl: '/images/mirror-001.jpg',
+      imageUrl: '/products/knife.svg',
       minStock: 5,
     },
     {
@@ -104,7 +104,7 @@ async function main(): Promise<void> {
       price: 399.99,
       stock: 8,
       category: 'Textile',
-      imageUrl: '/images/rug-001.jpg',
+      imageUrl: '/products/candle.svg',
       minStock: 2,
     },
     {
@@ -114,7 +114,7 @@ async function main(): Promise<void> {
       price: 189.99,
       stock: 20,
       category: 'Éclairage',
-      imageUrl: '/images/lamp-002.jpg',
+      imageUrl: '/products/skull.svg',
       minStock: 5,
     },
   ];
