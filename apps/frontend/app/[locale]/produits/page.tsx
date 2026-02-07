@@ -1,6 +1,10 @@
+import { Suspense } from 'react';
 import { ProductsPageClient } from '../../../components/shop/ProductsPageClient';
 
 export default function ProduitsPage() {
-  // Client-side render — locale is obtained via useLocale() inside the client component.
-  return <ProductsPageClient />;
+  return (
+    <Suspense fallback={<div className="py-12 text-center text-neutral-600">Chargement…</div>}>
+      <ProductsPageClient />
+    </Suspense>
+  );
 }
