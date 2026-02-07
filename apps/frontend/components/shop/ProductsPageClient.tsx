@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { ProductCard } from '../ProductCard';
 import { products as fallbackProducts } from '../../data/products';
 
@@ -56,8 +56,9 @@ function normalizeItems(raw: any): UiProduct[] {
     .filter(p => p.sku && p.name);
 }
 
-export function ProductsPageClient({ locale }: { locale: string }) {
+export function ProductsPageClient() {
   const t = useTranslations();
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();

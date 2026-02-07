@@ -1,10 +1,10 @@
-import { ProductDetailPageClient } from '../../../../components/shop/ProductDetailPageClient';
+import { ProductDetailClient } from '../../../../components/shop/ProductDetailClient';
 
 export default function ProductDetail({
-  params: { locale, slug },
+  params: { slug },
 }: {
-  params: { locale: string; slug: string };
+  params: { slug: string };
 }) {
-  // Client-side render to avoid Azure Server Components crashes.
-  return <ProductDetailPageClient locale={locale} slug={slug} />;
+  // Client-side render — locale is obtained via useLocale() inside the client component.
+  return <ProductDetailClient slug={slug} />;
 }

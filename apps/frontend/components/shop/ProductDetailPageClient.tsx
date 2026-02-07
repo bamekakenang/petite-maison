@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { AddToCartButton } from '../AddToCartButton';
 import { currencyForLocale } from '../../lib/currency';
 import { resolveProductImageUrl } from '../../lib/urls';
@@ -54,13 +54,12 @@ function slugToSku(slug: string): string {
 }
 
 export function ProductDetailPageClient({
-  locale,
   slug,
 }: {
-  locale: string;
   slug: string;
 }) {
   const t = useTranslations();
+  const locale = useLocale();
 
   const fmt = useMemo(() => {
     return new Intl.NumberFormat(locale, {
