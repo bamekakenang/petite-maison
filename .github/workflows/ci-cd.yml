@@ -112,6 +112,34 @@ jobs:
         run: |
           node -e "const c=require('./coverage/coverage-summary.json')?.total?.lines?.pct; if (typeof c !== 'number') { console.error('Unable to read coverage'); process.exit(1); } if (c < 70) { console.error('Coverage is below 70%: ' + c + '%'); process.exit(1); } console.log('Coverage OK: ' + c + '%');"
 
+  test-frontend:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    needs: lint-frontend
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        working-directory: ./apps/frontend
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
+      - name: Run tests with coverage
+        working-directory: ./apps/frontend
+        run: npm test -- --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./apps/frontend/coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
+
   security-backend:
     name: Backend Security Scan
     runs-on: ubuntu-latest
@@ -216,7 +244,7 @@ jobs:
   build-frontend:
     name: Build Frontend
     runs-on: ubuntu-latest
-    needs: [lint-frontend]
+    needs: [lint-frontend, test-frontend]
     steps:
       - uses: actions/checkout@v3
 
