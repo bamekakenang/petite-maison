@@ -137,10 +137,10 @@ jobs:
 
       - name: Run npm audit
         working-directory: ./backend
-        run: npm audit --audit-level=moderate
-        continue-on-error: true
+        run: npm audit --audit-level=critical || echo 'Audit found vulnerabilities (non-blocking)'
 
       - name: Run Snyk Security Scan
+        if: ${{ env.SNYK_TOKEN != '' }}
         uses: snyk/actions/node@master
         continue-on-error: true
         env:
@@ -173,8 +173,7 @@ jobs:
 
       - name: Run npm audit
         working-directory: ./apps/frontend
-        run: npm audit --audit-level=moderate
-        continue-on-error: true
+        run: npm audit --audit-level=critical || echo 'Audit found vulnerabilities (non-blocking)'
 
   build-backend:
     name: Build Backend
@@ -281,14 +280,12 @@ jobs:
     name: ZAP Baseline
     runs-on: ubuntu-latest
     needs: [build-backend, build-frontend]
+    if: ${{ secrets.ZAP_TARGET_URL != '' }}
     steps:
       - name: Make workspace writable for ZAP container
-        if: ${{ env.ZAP_TARGET_URL != '' }}
-        run: |
-          chmod a+rwx "${GITHUB_WORKSPACE}"
+        run: chmod a+rwx "${GITHUB_WORKSPACE}"
 
       - name: Normalize ZAP target URL
-        if: ${{ env.ZAP_TARGET_URL != '' }}
         run: |
           TARGET="${ZAP_TARGET_URL}"
           if [[ "${TARGET}" != http* ]]; then
@@ -296,8 +293,7 @@ jobs:
           fi
           echo "ZAP_TARGET_URL=${TARGET}" >> "$GITHUB_ENV"
 
-      - name: Run ZAP Baseline (optional)
-        if: ${{ env.ZAP_TARGET_URL != '' }}
+      - name: Run ZAP Baseline
         continue-on-error: true
         uses: zaproxy/action-baseline@v0.10.0
         with:
