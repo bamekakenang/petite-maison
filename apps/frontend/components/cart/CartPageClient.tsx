@@ -12,6 +12,7 @@ export function CartPageClient({ continueHref, checkoutHref }: { continueHref: s
   const router = useRouter();
   const locale = useLocale();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!ready) {
     return (
@@ -52,8 +53,7 @@ export function CartPageClient({ continueHref, checkoutHref }: { continueHref: s
       if (!res.ok || !data?.url) throw new Error(data?.error || 'checkout_failed');
       window.location.href = data.url;
     } catch (e) {
-      // Fallback: redirect to login
-      router.push(`/${locale}/connexion?next=/${locale}/panier`);
+      setError(t('errors.checkoutFailed'));
     } finally {
       setLoading(false);
     }
@@ -82,8 +82,9 @@ export function CartPageClient({ continueHref, checkoutHref }: { continueHref: s
       <div className="flex justify-end items-center gap-3 p-4">
         <div className="font-semibold">Total: {total.toFixed(2)}€</div>
         <button onClick={clear} className="px-3 py-2 rounded border border-white/20 hover:bg-white/10">{t('pages.cart.clear')}</button>
-        <button disabled={loading} onClick={() => { void goToStripe(); }} className="px-3 py-2 rounded bg-white text-black hover:bg-neutral-200 disabled:opacity-60">{loading ? '…' : t('pages.cart.checkout')}</button>
+        <button disabled={loading} onClick={() => { setError(null); void goToStripe(); }} className="px-3 py-2 rounded bg-white text-black hover:bg-neutral-200 disabled:opacity-60">{loading ? '…' : t('pages.cart.checkout')}</button>
       </div>
+      {error && <p className="text-right text-sm text-red-500 mt-2">{error}</p>}
     </div>
   );
 }

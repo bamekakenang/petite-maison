@@ -19,16 +19,22 @@ export async function POST(req: Request) {
     // Derive origin
     const origin = originFromBody || req.headers.get('origin') || req.headers.get('referer')?.replace(/\/(fr|en|[a-z]{2})(\/.*)?$/, '') || 'http://localhost:3001';
 
-    // Require authentication (use user cookie set by login/register)
+    // Require authentication: check auth_token (httpOnly) or user cookie
     let userId: number | undefined;
+    const hasAuthToken = !!cookies().get('auth_token')?.value;
     try {
       const userRaw = cookies().get('user')?.value;
       if (userRaw) {
-        const parsed = JSON.parse(userRaw);
+        // Handle possible URL-encoding of JSON cookie value
+        let decoded = userRaw;
+        if (decoded.startsWith('%7B') || decoded.startsWith('%22')) {
+          try { decoded = decodeURIComponent(decoded); } catch {}
+        }
+        const parsed = JSON.parse(decoded);
         if (parsed?.id) userId = parsed.id;
       }
     } catch {}
-    if (!userId) {
+    if (!userId && !hasAuthToken) {
       const ref = req.headers.get('referer');
       let nextPath = `/${locale || 'fr'}/panier`;
       try { if (ref) nextPath = new URL(ref).pathname; } catch {}
