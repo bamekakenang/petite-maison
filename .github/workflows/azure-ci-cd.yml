@@ -41,6 +41,7 @@ jobs:
           app-name: ${{ secrets.BACKEND_APP_NAME }}
           publish-profile: ${{ secrets.BACKEND_PUBLISH_PROFILE }}
           package: backend.zip
+          clean: true
 
   deploy-frontend:
     runs-on: ubuntu-latest
