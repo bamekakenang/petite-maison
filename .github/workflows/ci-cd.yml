@@ -308,7 +308,7 @@ jobs:
     name: ZAP Baseline
     runs-on: ubuntu-latest
     needs: [build-backend, build-frontend]
-    if: ${{ secrets.ZAP_TARGET_URL != '' }}
+    if: ${{ vars.ZAP_TARGET_URL != '' || env.ZAP_TARGET_URL != '' }}
     steps:
       - name: Make workspace writable for ZAP container
         run: chmod a+rwx "${GITHUB_WORKSPACE}"
