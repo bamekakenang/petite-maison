@@ -10,9 +10,6 @@ config:
     - duration: 180
       arrivalRate: 50
       name: "Sustained load"
-  variables:
-    adminEmail: "admin@petitemaison.fr"
-    adminPassword: "password123"
 
 scenarios:
   # Scenario 1: Product Browsing (70% des utilisateurs)
@@ -36,10 +33,12 @@ scenarios:
     weight: 15
     flow:
       - post:
-          url: "/api/v1/auth/login"
+          url: "/api/v1/auth/register"
           json:
-            email: "{{ adminEmail }}"
-            password: "{{ adminPassword }}"
+            email: "lt-{{ $randomNumber(100000, 999999) }}-{{ $randomNumber(100000, 999999) }}-{{ $randomNumber(1000, 9999) }}@test.fr"
+            password: "LoadTest2024!Secure"
+            firstName: "Load"
+            lastName: "Test"
           capture:
             - json: "$.data.tokens.accessToken"
               as: "authToken"
@@ -53,10 +52,12 @@ scenarios:
     weight: 10
     flow:
       - post:
-          url: "/api/v1/auth/login"
+          url: "/api/v1/auth/register"
           json:
-            email: "{{ adminEmail }}"
-            password: "{{ adminPassword }}"
+            email: "or-{{ $randomNumber(100000, 999999) }}-{{ $randomNumber(100000, 999999) }}-{{ $randomNumber(1000, 9999) }}@test.fr"
+            password: "LoadTest2024!Secure"
+            firstName: "Order"
+            lastName: "Test"
           capture:
             - json: "$.data.tokens.accessToken"
               as: "authToken"
@@ -72,20 +73,21 @@ scenarios:
           json:
             items:
               - productId: "{{ productId }}"
-                quantity: 2
-            shippingAddress: "123 Test Street, Paris 75001"
-            billingAddress: "123 Test Street, Paris 75001"
-            paymentMethod: "CARD"
+                quantity: 1
+            shippingAddress: "4 Rue du Festival, 16000 Angoulême"
+            billingAddress: "4 Rue du Festival, 16000 Angoulême"
 
-  # Scenario 4: Admin Operations (5% des utilisateurs)
-  - name: "Admin Operations"
+  # Scenario 4: Authenticated Operations (5% des utilisateurs)
+  - name: "Authenticated Operations"
     weight: 5
     flow:
       - post:
-          url: "/api/v1/auth/login"
+          url: "/api/v1/auth/register"
           json:
-            email: "{{ adminEmail }}"
-            password: "{{ adminPassword }}"
+            email: "op-{{ $randomNumber(100000, 999999) }}-{{ $randomNumber(100000, 999999) }}-{{ $randomNumber(1000, 9999) }}@test.fr"
+            password: "LoadTest2024!Secure"
+            firstName: "Ops"
+            lastName: "Test"
           capture:
             - json: "$.data.tokens.accessToken"
               as: "authToken"
